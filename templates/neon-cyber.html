@@ -1,0 +1,1329 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Jesse Zen — Java Backend Developer</title>
+  <meta name="description" content="Jesse Zen — Java Backend Developer. Backend Architecture, AI Integration. Ship beats perfect — learn by building.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    /* ============================================
+       CSS VARIABLES — Neon Cyberpunk Palette
+       ============================================ */
+    :root {
+      --bg: #0a0a0f;
+      --card-bg: #111118;
+      --card-border: #1e1e2e;
+      --cyan: #00f0ff;
+      --purple: #a855f7;
+      --green: #22c55e;
+      --pink: #ec4899;
+      --text: #e2e8f0;
+      --text-muted: #94a3b8;
+      --text-dim: #64748b;
+      --text-faint: #475569;
+      --font-body: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+      --font-display: 'Chakra Petch', sans-serif;
+      --font-mono: 'JetBrains Mono', 'SF Mono', 'Fira Code', monospace;
+    }
+
+    /* ============================================
+       RESET & BASE
+       ============================================ */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html {
+      scroll-behavior: smooth;
+      scroll-padding-top: 80px;
+    }
+
+    body {
+      min-height: 100vh;
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--font-body);
+      line-height: 1.5;
+      position: relative;
+      overflow-x: hidden;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+
+    section { scroll-margin-top: 80px; }
+
+    a { color: inherit; text-decoration: none; }
+
+    ::selection { background: rgba(0, 240, 255, 0.25); color: var(--text); }
+
+    ::-webkit-scrollbar { width: 8px; height: 8px; }
+    ::-webkit-scrollbar-track { background: var(--bg); }
+    ::-webkit-scrollbar-thumb { background: var(--card-border); border-radius: 4px; }
+    ::-webkit-scrollbar-thumb:hover { background: rgba(0, 240, 255, 0.3); }
+
+    /* ============================================
+       COLOR MODIFIER CLASSES
+       ============================================ */
+    .cyan   { --c: var(--cyan); }
+    .purple { --c: var(--purple); }
+    .green  { --c: var(--green); }
+    .pink   { --c: var(--pink); }
+
+    /* ============================================
+       BACKGROUND EFFECTS
+       ============================================ */
+    .bg-grid {
+      position: fixed;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(0, 240, 255, 0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0, 240, 255, 0.03) 1px, transparent 1px);
+      background-size: 60px 60px;
+      pointer-events: none;
+      z-index: 0;
+      animation: grid-move 8s linear infinite;
+    }
+
+    .bg-glow {
+      position: absolute;
+      top: -100px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 600px;
+      height: 400px;
+      background: radial-gradient(ellipse, rgba(168, 85, 247, 0.08) 0%, rgba(0, 240, 255, 0.03) 40%, transparent 70%);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .bg-vignette {
+      position: fixed;
+      inset: 0;
+      background: radial-gradient(ellipse at center, transparent 40%, rgba(0, 0, 0, 0.5) 100%);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .bg-scanlines {
+      position: fixed;
+      inset: 0;
+      background: repeating-linear-gradient(
+        0deg,
+        transparent,
+        transparent 2px,
+        rgba(0, 240, 255, 0.012) 2px,
+        rgba(0, 240, 255, 0.012) 4px
+      );
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    /* ============================================
+       LAYOUT
+       ============================================ */
+    .container {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 60px 24px 80px;
+      position: relative;
+      z-index: 1;
+    }
+
+    /* ============================================
+       NAV
+       ============================================ */
+    .nav {
+      border-bottom: 1px solid var(--card-border);
+      background: rgba(10, 10, 15, 0.7);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      transition: background 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .nav.scrolled {
+      background: rgba(10, 10, 15, 0.95);
+      box-shadow: 0 1px 20px rgba(0, 240, 255, 0.05);
+    }
+
+    .nav-inner {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 14px 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .nav-brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .brand-link {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .brand-icon {
+      width: 22px;
+      height: 22px;
+      color: var(--cyan);
+      filter: drop-shadow(0 0 6px rgba(0, 240, 255, 0.4));
+    }
+
+    .brand-text {
+      font-family: var(--font-display);
+      font-weight: 700;
+      font-size: 16px;
+      letter-spacing: -0.02em;
+      color: var(--text);
+    }
+
+    .pro-badge {
+      background: rgba(168, 85, 247, 0.13);
+      color: var(--purple);
+      padding: 2px 10px;
+      border-radius: 12px;
+      font-size: 11px;
+      font-weight: 600;
+      font-family: var(--font-mono);
+      border: 1px solid rgba(168, 85, 247, 0.2);
+      box-shadow: 0 0 8px rgba(168, 85, 247, 0.12);
+    }
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+    }
+
+    .nav-link {
+      position: relative;
+      color: var(--text-dim);
+      font-size: 14px;
+      font-weight: 500;
+      transition: color 0.2s ease;
+    }
+
+    .nav-link::after {
+      content: '';
+      position: absolute;
+      bottom: -4px;
+      left: 0;
+      width: 0;
+      height: 1px;
+      background: var(--cyan);
+      box-shadow: 0 0 6px var(--cyan);
+      transition: width 0.3s ease;
+    }
+
+    .nav-link:hover,
+    .nav-link.active {
+      color: var(--text);
+    }
+
+    .nav-link:hover::after,
+    .nav-link.active::after {
+      width: 100%;
+    }
+
+    .nav-social {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .social-link {
+      color: var(--text-dim);
+      transition: color 0.2s ease;
+      display: flex;
+      align-items: center;
+    }
+
+    .social-link:hover {
+      color: var(--cyan);
+    }
+
+    .social-icon {
+      width: 16px;
+      height: 16px;
+    }
+
+    /* ============================================
+       HERO
+       ============================================ */
+    .hero {
+      text-align: center;
+      margin-bottom: 56px;
+      position: relative;
+    }
+
+    .status-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(34, 197, 94, 0.08);
+      border: 1px solid rgba(34, 197, 94, 0.2);
+      padding: 6px 16px;
+      border-radius: 20px;
+      margin-bottom: 24px;
+      animation: float 4s ease-in-out infinite;
+    }
+
+    .status-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--green);
+      box-shadow: 0 0 8px rgba(34, 197, 94, 0.53);
+      animation: glow-pulse 2s infinite;
+    }
+
+    .status-text {
+      font-size: 13px;
+      color: var(--green);
+      font-weight: 500;
+    }
+
+    .hero-name {
+      font-family: var(--font-display);
+      font-size: clamp(2.25rem, 7vw, 3.5rem);
+      font-weight: 700;
+      letter-spacing: -0.04em;
+      line-height: 1.05;
+      margin: 0 0 12px;
+      background: linear-gradient(135deg, var(--cyan), var(--purple), var(--pink), var(--cyan));
+      background-size: 300% 100%;
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+      color: transparent;
+      animation: shimmer 6s linear infinite;
+    }
+
+    .hero-role {
+      font-size: 20px;
+      color: var(--text-muted);
+      font-weight: 400;
+      margin: 0 0 20px;
+      letter-spacing: -0.01em;
+    }
+
+    .hero-info {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 20px;
+      color: var(--text-dim);
+      font-size: 14px;
+      flex-wrap: wrap;
+    }
+
+    .info-item {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    .info-icon {
+      width: 14px;
+      height: 14px;
+      flex-shrink: 0;
+    }
+
+    .info-icon.cyan   { color: var(--cyan); }
+    .info-icon.purple { color: var(--purple); }
+    .info-icon.green  { color: var(--green); }
+
+    .quote-box {
+      margin-top: 28px;
+      padding: 14px 24px;
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-left: 2px solid var(--cyan);
+      border-radius: 8px;
+      display: inline-block;
+      box-shadow: 0 0 20px rgba(0, 240, 255, 0.04);
+    }
+
+    .quote-box p {
+      font-family: var(--font-mono);
+      font-size: 14px;
+      color: var(--text-muted);
+      font-style: italic;
+    }
+
+    /* ============================================
+       STATS GRID
+       ============================================ */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 16px;
+      margin-bottom: 40px;
+    }
+
+    .stat-card {
+      background: var(--card-bg);
+      border: 1px solid color-mix(in srgb, var(--c) 13%, transparent);
+      border-radius: 12px;
+      padding: 24px 20px;
+      text-align: center;
+      transition: all 0.3s ease;
+    }
+
+    .stat-card:hover {
+      border-color: color-mix(in srgb, var(--c) 40%, transparent);
+      box-shadow:
+        0 0 20px color-mix(in srgb, var(--c) 27%, transparent),
+        0 0 40px color-mix(in srgb, var(--c) 13%, transparent);
+      transform: translateY(-3px);
+    }
+
+    .stat-icon {
+      width: 20px;
+      height: 20px;
+      color: var(--c);
+      margin-bottom: 12px;
+      filter: drop-shadow(0 0 6px color-mix(in srgb, var(--c) 40%, transparent));
+    }
+
+    .stat-value {
+      font-family: var(--font-mono);
+      font-size: 28px;
+      font-weight: 700;
+      color: var(--c);
+      letter-spacing: -0.04em;
+      line-height: 1;
+      text-shadow: 0 0 20px color-mix(in srgb, var(--c) 27%, transparent);
+      margin-bottom: 4px;
+    }
+
+    .stat-label {
+      font-size: 12px;
+      color: var(--text-dim);
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+
+    /* ============================================
+       NEON CARD (section wrapper)
+       ============================================ */
+    .neon-card {
+      background: var(--card-bg);
+      border: 1px solid color-mix(in srgb, var(--c, var(--cyan)) 20%, transparent);
+      border-radius: 12px;
+      padding: 24px;
+      box-shadow:
+        0 0 15px color-mix(in srgb, var(--c, var(--cyan)) 7%, transparent),
+        inset 0 1px 0 color-mix(in srgb, var(--c, var(--cyan)) 7%, transparent);
+      margin-bottom: 32px;
+    }
+
+    .section-header {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+
+    .section-icon {
+      width: 18px;
+      height: 18px;
+      color: var(--c, var(--cyan));
+      filter: drop-shadow(0 0 6px color-mix(in srgb, var(--c, var(--cyan)) 40%, transparent));
+      flex-shrink: 0;
+    }
+
+    .section-title {
+      font-family: var(--font-display);
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--text);
+      letter-spacing: -0.02em;
+    }
+
+    /* ============================================
+       TECH STACK
+       ============================================ */
+    .tech-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .tech-item {
+      background: color-mix(in srgb, var(--c) 7%, transparent);
+      border: 1px solid color-mix(in srgb, var(--c) 20%, transparent);
+      border-radius: 8px;
+      padding: 10px 20px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      box-shadow: 0 0 12px color-mix(in srgb, var(--c) 20%, transparent);
+      transition: all 0.2s ease;
+    }
+
+    .tech-item:hover {
+      transform: translateY(-2px);
+      border-color: color-mix(in srgb, var(--c) 50%, transparent);
+      box-shadow: 0 0 16px color-mix(in srgb, var(--c) 33%, transparent);
+    }
+
+    .tech-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--c);
+      box-shadow: 0 0 6px color-mix(in srgb, var(--c) 53%, transparent);
+    }
+
+    .tech-name {
+      font-family: var(--font-mono);
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--c);
+    }
+
+    /* ============================================
+       PROJECTS
+       ============================================ */
+    .projects-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+    }
+
+    .project-card {
+      background: rgba(10, 10, 15, 0.67);
+      border: 1px solid color-mix(in srgb, var(--c) 13%, transparent);
+      border-radius: 10px;
+      padding: 18px;
+      transition: all 0.25s ease;
+    }
+
+    .project-card:hover {
+      border-color: color-mix(in srgb, var(--c) 40%, transparent);
+      box-shadow: 0 0 20px color-mix(in srgb, var(--c) 15%, transparent);
+      transform: translateY(-2px);
+    }
+
+    .project-header {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 8px;
+    }
+
+    .project-icon {
+      width: 15px;
+      height: 15px;
+      color: var(--c);
+      flex-shrink: 0;
+    }
+
+    .project-name {
+      font-family: var(--font-mono);
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--c);
+    }
+
+    .project-desc {
+      font-size: 12px;
+      color: var(--text-dim);
+      line-height: 1.5;
+      margin-bottom: 12px;
+    }
+
+    .project-meta {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      font-size: 12px;
+      color: var(--text-dim);
+    }
+
+    .meta-item {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .lang-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--c);
+      display: inline-block;
+    }
+
+    .meta-icon {
+      width: 12px;
+      height: 12px;
+    }
+
+    /* ============================================
+       BLOG
+       ============================================ */
+    .blog-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+    }
+
+    .blog-card {
+      background: rgba(10, 10, 15, 0.67);
+      border: 1px solid color-mix(in srgb, var(--c) 13%, transparent);
+      border-radius: 10px;
+      padding: 20px;
+      transition: all 0.25s ease;
+      cursor: pointer;
+    }
+
+    .blog-card:hover {
+      border-color: color-mix(in srgb, var(--c) 40%, transparent);
+      box-shadow: 0 0 20px color-mix(in srgb, var(--c) 12%, transparent);
+      transform: translateY(-2px);
+    }
+
+    .blog-tag {
+      display: inline-block;
+      font-family: var(--font-mono);
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--c);
+      background: color-mix(in srgb, var(--c) 10%, transparent);
+      border: 1px solid color-mix(in srgb, var(--c) 25%, transparent);
+      padding: 2px 10px;
+      border-radius: 10px;
+      margin-bottom: 12px;
+    }
+
+    .blog-title {
+      font-family: var(--font-display);
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--text);
+      line-height: 1.4;
+      margin-bottom: 8px;
+      transition: color 0.2s ease;
+    }
+
+    .blog-card:hover .blog-title {
+      color: var(--c);
+    }
+
+    .blog-excerpt {
+      font-size: 13px;
+      color: var(--text-dim);
+      line-height: 1.5;
+      margin-bottom: 14px;
+    }
+
+    .blog-meta {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      font-family: var(--font-mono);
+      font-size: 11px;
+      color: var(--text-faint);
+    }
+
+    .blog-meta-item {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    /* ============================================
+       ACTIVITY TIMELINE
+       ============================================ */
+    .timeline {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .timeline-item {
+      display: flex;
+      gap: 12px;
+      padding-bottom: 16px;
+      position: relative;
+    }
+
+    .timeline-item:last-child {
+      padding-bottom: 0;
+    }
+
+    .timeline-marker {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      flex-shrink: 0;
+      width: 16px;
+    }
+
+    .timeline-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: var(--c);
+      box-shadow: 0 0 8px color-mix(in srgb, var(--c) 53%, transparent);
+      flex-shrink: 0;
+      margin-top: 3px;
+    }
+
+    .timeline-line {
+      width: 1px;
+      flex: 1;
+      background: linear-gradient(to bottom, color-mix(in srgb, var(--c) 27%, transparent), var(--card-border));
+      margin-top: 4px;
+    }
+
+    .timeline-item:last-child .timeline-line {
+      display: none;
+    }
+
+    .timeline-content {
+      flex: 1;
+      padding-bottom: 4px;
+    }
+
+    .timeline-action {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text);
+      margin-bottom: 2px;
+    }
+
+    .timeline-desc {
+      font-family: var(--font-mono);
+      font-size: 12px;
+      color: var(--text-dim);
+      line-height: 1.4;
+    }
+
+    .timeline-time {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      color: var(--text-faint);
+      margin-top: 3px;
+    }
+
+    /* ============================================
+       INTERESTS
+       ============================================ */
+    .interests-grid {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 12px;
+    }
+
+    .interest-item {
+      text-align: center;
+      padding: 16px 8px;
+      background: color-mix(in srgb, var(--c) 3%, transparent);
+      border: 1px solid color-mix(in srgb, var(--c) 13%, transparent);
+      border-radius: 10px;
+      transition: all 0.25s ease;
+    }
+
+    .interest-item:hover {
+      border-color: color-mix(in srgb, var(--c) 40%, transparent);
+      transform: translateY(-3px);
+      box-shadow: 0 0 16px color-mix(in srgb, var(--c) 15%, transparent);
+    }
+
+    .interest-icon {
+      width: 22px;
+      height: 22px;
+      color: var(--c);
+      margin-bottom: 8px;
+      filter: drop-shadow(0 0 6px color-mix(in srgb, var(--c) 33%, transparent));
+    }
+
+    .interest-name {
+      font-family: var(--font-mono);
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--c);
+    }
+
+    /* ============================================
+       FOOTER
+       ============================================ */
+    .footer {
+      text-align: center;
+      padding-top: 32px;
+      border-top: 1px solid var(--card-border);
+    }
+
+    .footer-text {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      margin-bottom: 12px;
+    }
+
+    .footer-icon {
+      width: 14px;
+      height: 14px;
+      color: var(--purple);
+      filter: drop-shadow(0 0 4px rgba(168, 85, 247, 0.4));
+    }
+
+    .footer-text span {
+      font-size: 13px;
+      color: var(--text-dim);
+    }
+
+    .footer-copy {
+      font-family: var(--font-mono);
+      font-size: 12px;
+      color: var(--text-faint);
+    }
+
+    /* ============================================
+       REVEAL ANIMATION
+       ============================================ */
+    .reveal {
+      opacity: 0;
+      transform: translateY(24px);
+      transition: opacity 0.7s ease, transform 0.7s ease;
+    }
+
+    .reveal.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* ============================================
+       KEYFRAME ANIMATIONS
+       ============================================ */
+    @keyframes glow-pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.7; }
+    }
+
+    @keyframes float {
+      0%, 100% { transform: translateY(0px); }
+      50% { transform: translateY(-6px); }
+    }
+
+    @keyframes shimmer {
+      0% { background-position: -200% center; }
+      100% { background-position: 200% center; }
+    }
+
+    @keyframes grid-move {
+      0% { transform: translateY(0); }
+      100% { transform: translateY(30px); }
+    }
+
+    /* ============================================
+       RESPONSIVE
+       ============================================ */
+    @media (max-width: 768px) {
+      .stats-grid { grid-template-columns: repeat(2, 1fr); }
+      .projects-grid { grid-template-columns: 1fr; }
+      .blog-grid { grid-template-columns: 1fr; }
+      .interests-grid { grid-template-columns: repeat(3, 1fr); }
+      .container { padding: 40px 20px 60px; }
+    }
+
+    @media (max-width: 480px) {
+      .stats-grid { grid-template-columns: 1fr; }
+      .interests-grid { grid-template-columns: repeat(2, 1fr); }
+      .nav-links { display: none; }
+      .hero-info { flex-direction: column; gap: 8px; }
+      .hero-name { font-size: 2.25rem; }
+      .nav-inner { padding: 12px 20px; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+      }
+    }
+  </style>
+  <link rel="stylesheet" href="../assets/shared.css" />
+</head>
+<body>
+<a href="../index.html" class="gh-back-hub" aria-label="返回多元宇宙">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+  MULTIVERSE
+</a>
+
+  <!-- SVG Icon Sprite -->
+  <svg xmlns="http://www.w3.org/2000/svg" style="display:none;" aria-hidden="true">
+    <symbol id="icon-github" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/>
+    </symbol>
+    <symbol id="icon-mail" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
+      <polyline points="22,6 12,13 2,6"/>
+    </symbol>
+    <symbol id="icon-external-link" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/>
+      <polyline points="15 3 21 3 21 9"/>
+      <line x1="10" y1="14" x2="21" y2="3"/>
+    </symbol>
+    <symbol id="icon-map-pin" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/>
+      <circle cx="12" cy="10" r="3"/>
+    </symbol>
+    <symbol id="icon-terminal" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <polyline points="4 17 10 11 4 5"/>
+      <line x1="12" y1="19" x2="20" y2="19"/>
+    </symbol>
+    <symbol id="icon-cpu" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <rect x="4" y="4" width="16" height="16" rx="2"/>
+      <rect x="9" y="9" width="6" height="6"/>
+      <line x1="9" y1="1" x2="9" y2="4"/>
+      <line x1="15" y1="1" x2="15" y2="4"/>
+      <line x1="9" y1="20" x2="9" y2="23"/>
+      <line x1="15" y1="20" x2="15" y2="23"/>
+      <line x1="20" y1="9" x2="23" y2="9"/>
+      <line x1="20" y1="14" x2="23" y2="14"/>
+      <line x1="1" y1="9" x2="4" y2="9"/>
+      <line x1="1" y1="14" x2="4" y2="14"/>
+    </symbol>
+    <symbol id="icon-activity" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/>
+    </symbol>
+    <symbol id="icon-flame" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z"/>
+    </symbol>
+    <symbol id="icon-star" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
+    </symbol>
+    <symbol id="icon-git-fork" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <circle cx="12" cy="18" r="3"/>
+      <circle cx="6" cy="6" r="3"/>
+      <circle cx="18" cy="6" r="3"/>
+      <path d="M18 9v1c0 1.66-1.34 3-3 3H9c-1.66 0-3 1.34-3 3v1"/>
+    </symbol>
+    <symbol id="icon-code" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <polyline points="16 18 22 12 16 6"/>
+      <polyline points="8 6 2 12 8 18"/>
+    </symbol>
+    <symbol id="icon-zap" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/>
+    </symbol>
+    <symbol id="icon-calendar" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/>
+      <line x1="16" y1="2" x2="16" y2="6"/>
+      <line x1="8" y1="2" x2="8" y2="6"/>
+      <line x1="3" y1="10" x2="21" y2="10"/>
+    </symbol>
+    <symbol id="icon-clock" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <circle cx="12" cy="12" r="10"/>
+      <polyline points="12 6 12 12 16 14"/>
+    </symbol>
+    <symbol id="icon-coffee" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M18 8h1a4 4 0 0 1 0 8h-1"/>
+      <path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z"/>
+      <line x1="6" y1="1" x2="6" y2="4"/>
+      <line x1="10" y1="1" x2="10" y2="4"/>
+      <line x1="14" y1="1" x2="14" y2="4"/>
+    </symbol>
+    <symbol id="icon-sparkles" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M9.937 15.5A2 2 0 0 0 8.5 14.063l-6.135-1.582a.5.5 0 0 1 0-.962L8.5 9.936A2 2 0 0 0 9.937 8.5l1.582-6.135a.5.5 0 0 1 .963 0L14.063 8.5A2 2 0 0 0 15.5 9.937l6.135 1.581a.5.5 0 0 1 0 .964L15.5 14.063a2 2 0 0 0-1.437 1.437l-1.582 6.135a.5.5 0 0 1-.963 0z"/>
+      <path d="M20 3v4"/>
+      <path d="M22 5h-4"/>
+      <path d="M4 17v2"/>
+      <path d="M5 18H3"/>
+    </symbol>
+    <symbol id="icon-globe" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <circle cx="12" cy="12" r="10"/>
+      <line x1="2" y1="12" x2="22" y2="12"/>
+      <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/>
+    </symbol>
+  </svg>
+
+  <!-- Background Effects -->
+  <div class="bg-grid"></div>
+  <div class="bg-glow"></div>
+  <div class="bg-vignette"></div>
+  <div class="bg-scanlines"></div>
+
+  <!-- Sticky Nav -->
+  <nav class="nav" id="nav">
+    <div class="nav-inner">
+      <div class="nav-brand">
+        <a href="#home" class="brand-link">
+          <svg class="brand-icon"><use href="#icon-github"/></svg>
+          <span class="brand-text">stuAccount</span>
+        </a>
+        <span class="pro-badge">PRO</span>
+      </div>
+      <div class="nav-links">
+        <a href="#home" class="nav-link">Home</a>
+        <a href="#projects" class="nav-link">Projects</a>
+        <a href="#blog" class="nav-link">Blog</a>
+        <a href="#about" class="nav-link">About</a>
+      </div>
+      <div class="nav-social">
+        <a href="https://github.com/stuAccount" class="social-link" aria-label="GitHub" target="_blank" rel="noopener">
+          <svg class="social-icon"><use href="#icon-github"/></svg>
+        </a>
+        <a href="mailto:hello@jessezen.dev" class="social-link" aria-label="Email">
+          <svg class="social-icon"><use href="#icon-mail"/></svg>
+        </a>
+        <a href="https://jessezen.dev" class="social-link" aria-label="Website" target="_blank" rel="noopener">
+          <svg class="social-icon"><use href="#icon-external-link"/></svg>
+        </a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Main Container -->
+  <main class="container">
+
+    <!-- Hero Section -->
+    <section id="home" class="hero">
+      <div class="status-badge">
+        <span class="status-dot"></span>
+        <span class="status-text">Available for hire</span>
+      </div>
+      <h1 class="hero-name">Jesse Zen</h1>
+      <p class="hero-role">Java Backend Developer</p>
+      <div class="hero-info">
+        <span class="info-item">
+          <svg class="info-icon cyan"><use href="#icon-map-pin"/></svg>
+          Earth
+        </span>
+        <span class="info-item">
+          <svg class="info-icon purple"><use href="#icon-terminal"/></svg>
+          Backend Architecture
+        </span>
+        <span class="info-item">
+          <svg class="info-icon green"><use href="#icon-cpu"/></svg>
+          AI Integration
+        </span>
+      </div>
+      <div class="quote-box">
+        <p>"Ship beats perfect — learn by building."</p>
+      </div>
+    </section>
+
+    <!-- Stats Cards -->
+    <section class="stats-grid reveal">
+      <div class="stat-card cyan">
+        <svg class="stat-icon"><use href="#icon-activity"/></svg>
+        <div class="stat-value" data-github="stat:contributions">1,247</div>
+        <div class="stat-label">Contributions</div>
+      </div>
+      <div class="stat-card purple">
+        <svg class="stat-icon"><use href="#icon-flame"/></svg>
+        <div class="stat-value" data-github="stat:streak">42 days</div>
+        <div class="stat-label">Current Streak</div>
+      </div>
+      <div class="stat-card green">
+        <svg class="stat-icon"><use href="#icon-star"/></svg>
+        <div class="stat-value" data-github="stat:stars">312</div>
+        <div class="stat-label">Stars Earned</div>
+      </div>
+      <div class="stat-card pink">
+        <svg class="stat-icon"><use href="#icon-git-fork"/></svg>
+        <div class="stat-value" data-github="stat:repos">38</div>
+        <div class="stat-label">Repositories</div>
+      </div>
+    </section>
+
+    <!-- Tech Stack -->
+    <section class="neon-card purple reveal">
+      <div class="section-header">
+        <svg class="section-icon"><use href="#icon-zap"/></svg>
+        <h2 class="section-title">Tech Stack</h2>
+      </div>
+      <div class="tech-list">
+        <div class="tech-item cyan"><span class="tech-dot"></span><span class="tech-name">Java</span></div>
+        <div class="tech-item green"><span class="tech-dot"></span><span class="tech-name">Spring</span></div>
+        <div class="tech-item pink"><span class="tech-dot"></span><span class="tech-name">Redis</span></div>
+        <div class="tech-item purple"><span class="tech-dot"></span><span class="tech-name">MySQL</span></div>
+        <div class="tech-item cyan"><span class="tech-dot"></span><span class="tech-name">Python</span></div>
+        <div class="tech-item green"><span class="tech-dot"></span><span class="tech-name">Docker</span></div>
+        <div class="tech-item purple"><span class="tech-dot"></span><span class="tech-name">Linux</span></div>
+        <div class="tech-item pink"><span class="tech-dot"></span><span class="tech-name">Git</span></div>
+        <div class="tech-item cyan"><span class="tech-dot"></span><span class="tech-name">Vim</span></div>
+        <div class="tech-item green"><span class="tech-dot"></span><span class="tech-name">Nginx</span></div>
+      </div>
+    </section>
+
+    <!-- Projects -->
+    <section id="projects" class="neon-card pink reveal">
+      <div class="section-header">
+        <svg class="section-icon"><use href="#icon-sparkles"/></svg>
+        <h2 class="section-title">Pinned Repositories</h2>
+      </div>
+      <div class="projects-grid" data-github="repos:list">
+        <div class="project-card cyan">
+          <div class="project-header">
+            <svg class="project-icon"><use href="#icon-code"/></svg>
+            <span class="project-name">spring-cloud-gateway-pro</span>
+          </div>
+          <p class="project-desc">Production-ready API gateway with rate limiting &amp; auth</p>
+          <div class="project-meta">
+            <span class="meta-item"><span class="lang-dot"></span>Java</span>
+            <span class="meta-item"><svg class="meta-icon"><use href="#icon-star"/></svg>128</span>
+            <span class="meta-item"><svg class="meta-icon"><use href="#icon-git-fork"/></svg>34</span>
+          </div>
+        </div>
+        <div class="project-card purple">
+          <div class="project-header">
+            <svg class="project-icon"><use href="#icon-code"/></svg>
+            <span class="project-name">distributed-task-scheduler</span>
+          </div>
+          <p class="project-desc">Fault-tolerant distributed task scheduling framework</p>
+          <div class="project-meta">
+            <span class="meta-item"><span class="lang-dot"></span>Java</span>
+            <span class="meta-item"><svg class="meta-icon"><use href="#icon-star"/></svg>87</span>
+            <span class="meta-item"><svg class="meta-icon"><use href="#icon-git-fork"/></svg>21</span>
+          </div>
+        </div>
+        <div class="project-card green">
+          <div class="project-header">
+            <svg class="project-icon"><use href="#icon-code"/></svg>
+            <span class="project-name">redis-cache-toolkit</span>
+          </div>
+          <p class="project-desc">Smart caching utilities with Redis &amp; Spring integration</p>
+          <div class="project-meta">
+            <span class="meta-item"><span class="lang-dot"></span>Java</span>
+            <span class="meta-item"><svg class="meta-icon"><use href="#icon-star"/></svg>54</span>
+            <span class="meta-item"><svg class="meta-icon"><use href="#icon-git-fork"/></svg>12</span>
+          </div>
+        </div>
+        <div class="project-card pink">
+          <div class="project-header">
+            <svg class="project-icon"><use href="#icon-code"/></svg>
+            <span class="project-name">leetcode-java-solutions</span>
+          </div>
+          <p class="project-desc">300+ LeetCode solutions with detailed explanations</p>
+          <div class="project-meta">
+            <span class="meta-item"><span class="lang-dot"></span>Java</span>
+            <span class="meta-item"><svg class="meta-icon"><use href="#icon-star"/></svg>43</span>
+            <span class="meta-item"><svg class="meta-icon"><use href="#icon-git-fork"/></svg>67</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Blog -->
+    <section id="blog" class="neon-card cyan reveal">
+      <div class="section-header">
+        <svg class="section-icon"><use href="#icon-calendar"/></svg>
+        <h2 class="section-title">Latest Blog Posts</h2>
+      </div>
+      <div class="blog-grid" data-github="blog:list">
+        <article class="blog-card green">
+          <span class="blog-tag">Spring Boot</span>
+          <h3 class="blog-title">深入理解 Spring Boot 3 的自动配置机制</h3>
+          <p class="blog-excerpt">探索 @AutoConfiguration 注解的工作原理，揭秘条件化装配的底层机制与 SPI 加载流程。</p>
+          <div class="blog-meta">
+            <span class="blog-meta-item"><svg class="meta-icon"><use href="#icon-calendar"/></svg>2024-03-15</span>
+            <span class="blog-meta-item"><svg class="meta-icon"><use href="#icon-clock"/></svg>8 min</span>
+          </div>
+        </article>
+        <article class="blog-card pink">
+          <span class="blog-tag">Redis</span>
+          <h3 class="blog-title">Redis 分布式锁的几种实现方式对比</h3>
+          <p class="blog-excerpt">对比 SETNX、Redlock、Redisson 三种方案，深入分析锁续期与可重入性的实现细节。</p>
+          <div class="blog-meta">
+            <span class="blog-meta-item"><svg class="meta-icon"><use href="#icon-calendar"/></svg>2024-02-28</span>
+            <span class="blog-meta-item"><svg class="meta-icon"><use href="#icon-clock"/></svg>12 min</span>
+          </div>
+        </article>
+        <article class="blog-card cyan">
+          <span class="blog-tag">Microservices</span>
+          <h3 class="blog-title">从零搭建高可用微服务架构</h3>
+          <p class="blog-excerpt">从注册发现、配置中心到链路追踪，手把手构建生产级微服务架构体系。</p>
+          <div class="blog-meta">
+            <span class="blog-meta-item"><svg class="meta-icon"><use href="#icon-calendar"/></svg>2024-02-10</span>
+            <span class="blog-meta-item"><svg class="meta-icon"><use href="#icon-clock"/></svg>15 min</span>
+          </div>
+        </article>
+        <article class="blog-card purple">
+          <span class="blog-tag">JVM</span>
+          <h3 class="blog-title">JVM 调优实战：GC 日志分析指南</h3>
+          <p class="blog-excerpt">通过真实案例解析 G1、ZGC 日志结构，掌握 GC 调优的核心指标与排查思路。</p>
+          <div class="blog-meta">
+            <span class="blog-meta-item"><svg class="meta-icon"><use href="#icon-calendar"/></svg>2024-01-20</span>
+            <span class="blog-meta-item"><svg class="meta-icon"><use href="#icon-clock"/></svg>10 min</span>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <!-- Activity Timeline -->
+    <section id="activity" class="neon-card green reveal">
+      <div class="section-header">
+        <svg class="section-icon"><use href="#icon-activity"/></svg>
+        <h2 class="section-title">Recent Activity</h2>
+      </div>
+      <div class="timeline" data-github="activity:list">
+        <div class="timeline-item cyan">
+          <div class="timeline-marker">
+            <span class="timeline-dot"></span>
+            <span class="timeline-line"></span>
+          </div>
+          <div class="timeline-content">
+            <div class="timeline-action">Pushed to spring-cloud-gateway-pro</div>
+            <div class="timeline-desc">feat: add Redis caching layer to user service</div>
+            <div class="timeline-time">2h ago</div>
+          </div>
+        </div>
+        <div class="timeline-item purple">
+          <div class="timeline-marker">
+            <span class="timeline-dot"></span>
+            <span class="timeline-line"></span>
+          </div>
+          <div class="timeline-content">
+            <div class="timeline-action">PR merged in distributed-task-scheduler</div>
+            <div class="timeline-desc">refactor: migrate payment module to Spring Boot 3</div>
+            <div class="timeline-time">1d ago</div>
+          </div>
+        </div>
+        <div class="timeline-item green">
+          <div class="timeline-marker">
+            <span class="timeline-dot"></span>
+            <span class="timeline-line"></span>
+          </div>
+          <div class="timeline-content">
+            <div class="timeline-action">Released redis-cache-toolkit v2.1.0</div>
+            <div class="timeline-desc">Added smart invalidation and Lua scripting support</div>
+            <div class="timeline-time">3d ago</div>
+          </div>
+        </div>
+        <div class="timeline-item pink">
+          <div class="timeline-marker">
+            <span class="timeline-dot"></span>
+            <span class="timeline-line"></span>
+          </div>
+          <div class="timeline-content">
+            <div class="timeline-action">Fixed critical bug in payment-service</div>
+            <div class="timeline-desc">resolve distributed lock race condition</div>
+            <div class="timeline-time">5d ago</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Interests -->
+    <section id="about" class="neon-card purple reveal">
+      <div class="section-header">
+        <svg class="section-icon"><use href="#icon-globe"/></svg>
+        <h2 class="section-title">Interests &amp; Focus Areas</h2>
+      </div>
+      <div class="interests-grid">
+        <div class="interest-item cyan">
+          <svg class="interest-icon"><use href="#icon-cpu"/></svg>
+          <div class="interest-name">Backend Architecture</div>
+        </div>
+        <div class="interest-item purple">
+          <svg class="interest-icon"><use href="#icon-sparkles"/></svg>
+          <div class="interest-name">AI Integration</div>
+        </div>
+        <div class="interest-item green">
+          <svg class="interest-icon"><use href="#icon-globe"/></svg>
+          <div class="interest-name">Distributed Systems</div>
+        </div>
+        <div class="interest-item pink">
+          <svg class="interest-icon"><use href="#icon-code"/></svg>
+          <div class="interest-name">LeetCode</div>
+        </div>
+        <div class="interest-item cyan">
+          <svg class="interest-icon"><use href="#icon-terminal"/></svg>
+          <div class="interest-name">Vim</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+      <div class="footer-text">
+        <svg class="footer-icon"><use href="#icon-coffee"/></svg>
+        <span>Crafted with care &amp; late-night coffee</span>
+      </div>
+      <div class="footer-copy">stuAccount @ GitHub — 2026</div>
+    </footer>
+
+  </main>
+
+  <script>
+    // Nav background intensify on scroll
+    (function() {
+      var nav = document.getElementById('nav');
+      function onScroll() {
+        if (window.scrollY > 20) {
+          nav.classList.add('scrolled');
+        } else {
+          nav.classList.remove('scrolled');
+        }
+      }
+      window.addEventListener('scroll', onScroll, { passive: true });
+      onScroll();
+    })();
+
+    // Reveal sections on scroll
+    (function() {
+      var reveals = document.querySelectorAll('.reveal');
+      if (!('IntersectionObserver' in window)) {
+        reveals.forEach(function(el) { el.classList.add('visible'); });
+        return;
+      }
+      var observer = new IntersectionObserver(function(entries) {
+        entries.forEach(function(entry) {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('visible');
+            observer.unobserve(entry.target);
+          }
+        });
+      }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
+      reveals.forEach(function(el) { observer.observe(el); });
+    })();
+
+    // Active nav link highlighting
+    (function() {
+      var sections = document.querySelectorAll('section[id]');
+      var navLinks = document.querySelectorAll('.nav-link');
+      if (!('IntersectionObserver' in window)) return;
+
+      var navObserver = new IntersectionObserver(function(entries) {
+        entries.forEach(function(entry) {
+          if (entry.isIntersecting) {
+            var id = entry.target.id;
+            navLinks.forEach(function(link) {
+              var isActive = link.getAttribute('href') === '#' + id;
+              link.classList.toggle('active', isActive);
+            });
+          }
+        });
+      }, { threshold: 0.2, rootMargin: '-80px 0px -50% 0px' });
+
+      sections.forEach(function(section) { navObserver.observe(section); });
+    })();
+  </script>
+
+<script src="../config.js"></script>
+<script src="../github-api.js"></script>
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    if (window.GitHubAPI) GitHubAPI.init();
+  });
+</script>
+
+</body>
+</html>

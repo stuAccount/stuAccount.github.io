@@ -1,0 +1,1341 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Jesse Zen — Java Backend Developer · Editorial</title>
+  <meta name="description" content="Jesse Zen — Java Backend Developer. A portfolio set in Playfair Display and Inter." />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;0,800;0,900;1,400;1,500;1,600;1,700&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+
+  <style>
+    /* ============================================================
+       JESSE ZEN — EDITORIAL · 杂志编辑风
+       Set in Playfair Display, Inter & JetBrains Mono
+       ============================================================ */
+
+    :root {
+      --bg: #f5f2ed;
+      --bg-alt: #faf8f5;
+      --paper: #fbf9f6;
+      --ink: #1a1a1a;
+      --ink-soft: #44423d;
+      --ink-faint: #8c887f;
+      --accent: #b8412c;
+      --accent-deep: #9a3520;
+      --rule: rgba(26, 26, 26, 0.12);
+      --rule-soft: rgba(26, 26, 26, 0.07);
+      --rule-strong: rgba(26, 26, 26, 0.22);
+
+      --serif: 'Playfair Display', 'Times New Roman', Georgia, serif;
+      --sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      --mono: 'JetBrains Mono', 'SF Mono', Menlo, monospace;
+
+      --max: 860px;
+      --max-wide: 1080px;
+      --pad: clamp(20px, 5vw, 40px);
+    }
+
+    *,
+    *::before,
+    *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; }
+
+    body {
+      background: var(--bg);
+      color: var(--ink);
+      font-family: var(--sans);
+      font-size: 17px;
+      line-height: 1.75;
+      font-weight: 400;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      text-rendering: optimizeLegibility;
+      overflow-x: hidden;
+    }
+
+    /* subtle paper grain */
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 1;
+      opacity: 0.4;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0.1 0 0 0 0 0.1 0 0 0 0 0.08 0 0 0 0.05 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+    }
+
+    a { color: inherit; text-decoration: none; }
+    img { max-width: 100%; display: block; }
+
+    ::selection { background: var(--accent); color: var(--bg); }
+
+    .wrap {
+      max-width: var(--max);
+      margin: 0 auto;
+      padding: 0 var(--pad);
+      position: relative;
+      z-index: 2;
+    }
+
+    /* ---------- MASTHEAD ---------- */
+    .dateline-strip {
+      border-bottom: 1px solid var(--rule);
+      background: var(--bg-alt);
+      position: relative;
+      z-index: 5;
+    }
+    .dateline-strip .inner {
+      max-width: var(--max-wide);
+      margin: 0 auto;
+      padding: 8px var(--pad);
+      display: flex;
+      justify-content: space-between;
+      gap: 16px;
+      font-family: var(--mono);
+      font-size: 11px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--ink-faint);
+    }
+    .dateline-strip .inner .live {
+      color: var(--accent);
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+    }
+    .dateline-strip .inner .live::before {
+      content: "";
+      width: 6px; height: 6px;
+      border-radius: 50%;
+      background: var(--accent);
+      box-shadow: 0 0 0 0 var(--accent);
+      animation: pulse 2.4s infinite;
+    }
+    @keyframes pulse {
+      0% { box-shadow: 0 0 0 0 rgba(184, 65, 44, 0.5); }
+      70% { box-shadow: 0 0 0 7px rgba(184, 65, 44, 0); }
+      100% { box-shadow: 0 0 0 0 rgba(184, 65, 44, 0); }
+    }
+
+    .masthead {
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      background: rgba(245, 242, 237, 0.86);
+      backdrop-filter: saturate(140%) blur(10px);
+      -webkit-backdrop-filter: saturate(140%) blur(10px);
+      border-bottom: 1px solid var(--rule);
+    }
+    .masthead-inner {
+      max-width: var(--max-wide);
+      margin: 0 auto;
+      padding: 16px var(--pad);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 24px;
+    }
+    .logo {
+      font-family: var(--serif);
+      font-weight: 800;
+      font-size: 22px;
+      letter-spacing: 0.04em;
+      color: var(--ink);
+      white-space: nowrap;
+      transition: color 0.3s ease;
+    }
+    .logo:hover { color: var(--accent); }
+
+    .nav {
+      display: flex;
+      gap: clamp(18px, 3vw, 38px);
+      font-size: 13px;
+      font-weight: 500;
+      letter-spacing: 0.02em;
+    }
+    .nav a {
+      position: relative;
+      color: var(--ink-soft);
+      padding: 4px 0;
+      transition: color 0.3s ease;
+    }
+    .nav a::after {
+      content: "";
+      position: absolute;
+      left: 0; bottom: 0;
+      width: 100%;
+      height: 1px;
+      background: var(--accent);
+      transform: scaleX(0);
+      transform-origin: right;
+      transition: transform 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
+    }
+    .nav a:hover,
+    .nav a.active { color: var(--ink); }
+    .nav a:hover::after,
+    .nav a.active::after { transform: scaleX(1); transform-origin: left; }
+
+    .issue-info {
+      font-family: var(--mono);
+      font-size: 11px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--ink-faint);
+      white-space: nowrap;
+    }
+
+    .menu-btn { display: none; }
+
+    /* ---------- SECTION HEAD ---------- */
+    .section-head {
+      display: flex;
+      align-items: baseline;
+      gap: 16px;
+      margin-bottom: 44px;
+    }
+    .section-num {
+      font-family: var(--mono);
+      font-size: 12px;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--accent);
+      white-space: nowrap;
+    }
+    .section-title {
+      font-family: var(--serif);
+      font-weight: 600;
+      font-style: italic;
+      font-size: 15px;
+      color: var(--ink);
+      white-space: nowrap;
+    }
+    .section-rule {
+      flex: 1;
+      height: 1px;
+      background: var(--rule);
+    }
+    .section-kicker {
+      font-family: var(--mono);
+      font-size: 11px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--ink-faint);
+      white-space: nowrap;
+    }
+
+    section { scroll-margin-top: 80px; position: relative; z-index: 2; }
+
+    /* ---------- HERO / COVER ---------- */
+    .hero {
+      padding: clamp(48px, 9vw, 96px) 0 clamp(40px, 6vw, 64px);
+      border-bottom: 1px solid var(--rule);
+    }
+    .hero-dateline {
+      font-family: var(--mono);
+      font-size: 12px;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--ink-faint);
+      margin-bottom: clamp(28px, 5vw, 48px);
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+    .hero-dateline .dot {
+      width: 4px; height: 4px;
+      border-radius: 50%;
+      background: var(--accent);
+      display: inline-block;
+    }
+
+    .hero-title {
+      font-family: var(--serif);
+      font-weight: 800;
+      font-size: clamp(3.4rem, 13vw, 7.5rem);
+      line-height: 0.92;
+      letter-spacing: -0.025em;
+      color: var(--ink);
+      margin-left: -0.04em;
+    }
+    .hero-title .given { display: block; }
+    .hero-title .family {
+      display: block;
+      font-style: italic;
+      font-weight: 500;
+      color: var(--accent);
+    }
+
+    .hero-sub {
+      font-family: var(--serif);
+      font-size: clamp(1.1rem, 2.4vw, 1.5rem);
+      font-weight: 400;
+      letter-spacing: 0.01em;
+      color: var(--ink-soft);
+      margin-top: 18px;
+    }
+
+    .hero-meta {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 14px 26px;
+      margin-top: 32px;
+      font-family: var(--mono);
+      font-size: 12px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--ink-faint);
+    }
+    .hero-meta .sep {
+      width: 14px; height: 1px; background: var(--rule-strong);
+    }
+    .status-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 9px;
+      padding: 7px 16px;
+      border: 1px solid var(--accent);
+      color: var(--accent);
+      border-radius: 999px;
+      font-family: var(--mono);
+      font-size: 11px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      font-weight: 500;
+    }
+    .status-badge::before {
+      content: "";
+      width: 7px; height: 7px;
+      border-radius: 50%;
+      background: var(--accent);
+      animation: pulse 2.4s infinite;
+    }
+
+    .pullquote {
+      margin-top: clamp(40px, 7vw, 72px);
+      padding: 0 0 0 clamp(20px, 4vw, 40px);
+      border-left: 2px solid var(--accent);
+      font-family: var(--serif);
+      font-style: italic;
+      font-weight: 400;
+      font-size: clamp(1.5rem, 3.6vw, 2.4rem);
+      line-height: 1.32;
+      color: var(--ink);
+      max-width: 720px;
+    }
+    .pullquote .mark {
+      font-size: 1.6em;
+      line-height: 0;
+      vertical-align: -0.18em;
+      color: var(--accent);
+      margin-right: 0.04em;
+    }
+    .pullquote cite {
+      display: block;
+      margin-top: 18px;
+      font-family: var(--mono);
+      font-style: normal;
+      font-size: 11px;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--ink-faint);
+    }
+
+    /* ---------- STATS ---------- */
+    .stats {
+      padding: clamp(56px, 9vw, 88px) 0;
+      border-bottom: 1px solid var(--rule);
+    }
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+    }
+    .stat {
+      padding: 8px clamp(14px, 2.4vw, 26px);
+      border-left: 1px solid var(--rule);
+      transition: background 0.4s ease;
+    }
+    .stat:first-child { border-left: none; padding-left: 0; }
+    .stat:hover { background: var(--bg-alt); }
+    .stat-num {
+      font-family: var(--serif);
+      font-weight: 700;
+      font-size: clamp(2.4rem, 5.5vw, 3.6rem);
+      line-height: 1;
+      letter-spacing: -0.02em;
+      color: var(--ink);
+    }
+    .stat-label {
+      margin-top: 12px;
+      font-family: var(--mono);
+      font-size: 11px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--ink-faint);
+      line-height: 1.4;
+    }
+    .stat:hover .stat-num { color: var(--accent); transition: color 0.4s ease; }
+
+    /* ---------- TECH STACK ---------- */
+    .stack {
+      padding: clamp(56px, 9vw, 88px) 0;
+      border-bottom: 1px solid var(--rule);
+    }
+    .stack-lead {
+      max-width: 560px;
+      font-family: var(--serif);
+      font-style: italic;
+      font-size: clamp(1.15rem, 2.4vw, 1.4rem);
+      line-height: 1.5;
+      color: var(--ink-soft);
+      margin-bottom: 40px;
+    }
+    .tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0;
+      border-top: 1px solid var(--rule);
+      border-left: 1px solid var(--rule);
+    }
+    .tag {
+      flex: 1 1 auto;
+      min-width: 120px;
+      padding: 18px 22px;
+      border-right: 1px solid var(--rule);
+      border-bottom: 1px solid var(--rule);
+      font-family: var(--mono);
+      font-size: 13px;
+      letter-spacing: 0.06em;
+      color: var(--ink-soft);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      transition: color 0.3s ease, background 0.3s ease;
+      cursor: default;
+    }
+    .tag .idx {
+      font-size: 10px;
+      color: var(--ink-faint);
+      transition: color 0.3s ease;
+    }
+    .tag:hover {
+      color: var(--accent);
+      background: var(--bg-alt);
+    }
+    .tag:hover .idx { color: var(--accent); }
+
+    /* ---------- PROJECTS ---------- */
+    .projects {
+      padding: clamp(56px, 9vw, 88px) 0;
+      border-bottom: 1px solid var(--rule);
+    }
+    .projects-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0;
+      border-top: 1px solid var(--rule);
+    }
+    .project {
+      padding: clamp(28px, 4vw, 40px) clamp(20px, 3vw, 32px);
+      border-bottom: 1px solid var(--rule);
+      border-right: 1px solid var(--rule);
+      transition: background 0.4s ease;
+      position: relative;
+    }
+    .project:nth-child(2n) { border-right: none; }
+    .project:hover { background: var(--bg-alt); }
+    .project-head {
+      display: flex;
+      align-items: baseline;
+      gap: 12px;
+      margin-bottom: 14px;
+    }
+    .project-num {
+      font-family: var(--mono);
+      font-size: 11px;
+      letter-spacing: 0.1em;
+      color: var(--ink-faint);
+    }
+    .project-lang {
+      margin-left: auto;
+      font-family: var(--mono);
+      font-size: 10px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--accent);
+      border: 1px solid var(--rule-strong);
+      padding: 2px 9px;
+      border-radius: 999px;
+    }
+    .project-title {
+      font-family: var(--serif);
+      font-weight: 700;
+      font-size: clamp(1.3rem, 2.4vw, 1.65rem);
+      line-height: 1.2;
+      letter-spacing: -0.01em;
+      color: var(--ink);
+      transition: color 0.3s ease;
+    }
+    .project:hover .project-title { color: var(--accent); }
+    .project-desc {
+      margin-top: 12px;
+      color: var(--ink-soft);
+      font-size: 15px;
+      line-height: 1.65;
+    }
+    .project-meta {
+      margin-top: 20px;
+      display: flex;
+      align-items: center;
+      gap: 18px;
+      font-family: var(--mono);
+      font-size: 12px;
+      color: var(--ink-faint);
+    }
+    .project-meta .m {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: color 0.3s ease;
+    }
+    .project:hover .project-meta .m { color: var(--ink-soft); }
+    .project-meta svg { display: block; }
+
+    /* ---------- BLOG ---------- */
+    .blog {
+      padding: clamp(56px, 9vw, 88px) 0;
+      border-bottom: 1px solid var(--rule);
+    }
+    .article {
+      padding: clamp(32px, 5vw, 48px) 0;
+      border-top: 1px solid var(--rule);
+    }
+    .article:first-of-type { border-top: none; padding-top: 0; }
+    .article-meta {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 10px 16px;
+      font-family: var(--mono);
+      font-size: 11px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--ink-faint);
+      margin-bottom: 16px;
+    }
+    .article-cat {
+      color: var(--accent);
+      border: 1px solid var(--accent);
+      padding: 2px 9px;
+      border-radius: 999px;
+      font-size: 10px;
+    }
+    .article-meta .sep { width: 12px; height: 1px; background: var(--rule-strong); }
+    .article-title {
+      font-family: var(--serif);
+      font-weight: 700;
+      font-size: clamp(1.5rem, 3vw, 2rem);
+      line-height: 1.22;
+      letter-spacing: -0.01em;
+      color: var(--ink);
+      transition: color 0.3s ease;
+      cursor: pointer;
+      display: inline-block;
+    }
+    .article-title:hover { color: var(--accent); }
+    .article-excerpt {
+      margin-top: 16px;
+      color: var(--ink-soft);
+      font-size: 16px;
+      line-height: 1.8;
+      max-width: 720px;
+    }
+    .article-excerpt::first-letter {
+      font-family: var(--serif);
+      font-weight: 700;
+      font-size: 3.6em;
+      line-height: 0.82;
+      float: left;
+      margin: 0.08em 0.12em 0 0;
+      color: var(--accent);
+    }
+    .article-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      margin-top: 18px;
+      font-family: var(--mono);
+      font-size: 11px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--ink);
+      border-bottom: 1px solid var(--ink);
+      padding-bottom: 2px;
+      transition: gap 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+    }
+    .article-link:hover {
+      gap: 14px;
+      color: var(--accent);
+      border-color: var(--accent);
+    }
+
+    /* ---------- DISPATCHES / ACTIVITY ---------- */
+    .dispatches {
+      padding: clamp(56px, 9vw, 88px) 0;
+      border-bottom: 1px solid var(--rule);
+    }
+    .timeline { border-top: 1px solid var(--rule); }
+    .dispatch {
+      display: grid;
+      grid-template-columns: 130px 1fr;
+      gap: clamp(16px, 4vw, 40px);
+      padding: clamp(22px, 3.5vw, 30px) 0;
+      border-bottom: 1px solid var(--rule);
+      align-items: baseline;
+    }
+    .dispatch-time {
+      font-family: var(--mono);
+      font-size: 11px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--accent);
+      white-space: nowrap;
+    }
+    .dispatch-body { }
+    .dispatch-action {
+      font-family: var(--serif);
+      font-weight: 600;
+      font-size: clamp(1.05rem, 2vw, 1.25rem);
+      color: var(--ink);
+      line-height: 1.35;
+    }
+    .dispatch-action .repo {
+      font-style: italic;
+      color: var(--accent);
+    }
+    .dispatch-desc {
+      margin-top: 6px;
+      font-family: var(--mono);
+      font-size: 13px;
+      color: var(--ink-soft);
+      line-height: 1.6;
+    }
+
+    /* ---------- ABOUT ---------- */
+    .about {
+      padding: clamp(56px, 9vw, 88px) 0;
+      border-bottom: 1px solid var(--rule);
+    }
+    .about-grid {
+      display: grid;
+      grid-template-columns: 1.6fr 1fr;
+      gap: clamp(32px, 6vw, 64px);
+      align-items: start;
+    }
+    .about-body p {
+      font-size: 17px;
+      line-height: 1.85;
+      color: var(--ink-soft);
+      max-width: 540px;
+    }
+    .about-body p + p { margin-top: 18px; }
+    .about-body p.lead::first-letter {
+      font-family: var(--serif);
+      font-weight: 700;
+      font-size: 4em;
+      line-height: 0.8;
+      float: left;
+      margin: 0.08em 0.12em 0 0;
+      color: var(--accent);
+    }
+    .about-body .signoff {
+      margin-top: 28px;
+      font-family: var(--serif);
+      font-style: italic;
+      font-size: 1.15rem;
+      color: var(--ink);
+    }
+
+    .interests h4 {
+      font-family: var(--mono);
+      font-size: 11px;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--ink-faint);
+      font-weight: 500;
+      margin-bottom: 18px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid var(--rule);
+    }
+    .interests ul { list-style: none; }
+    .interests li {
+      display: flex;
+      align-items: baseline;
+      gap: 12px;
+      padding: 11px 0;
+      border-bottom: 1px solid var(--rule-soft);
+      font-family: var(--serif);
+      font-size: 1.02rem;
+      color: var(--ink);
+      transition: color 0.3s ease, padding-left 0.3s ease;
+      cursor: default;
+    }
+    .interests li .n {
+      font-family: var(--mono);
+      font-size: 10px;
+      color: var(--ink-faint);
+      transition: color 0.3s ease;
+    }
+    .interests li:hover {
+      color: var(--accent);
+      padding-left: 6px;
+    }
+    .interests li:hover .n { color: var(--accent); }
+
+    /* ---------- COLOPHON / FOOTER ---------- */
+    .colophon {
+      padding: clamp(48px, 7vw, 72px) 0 clamp(32px, 5vw, 48px);
+      background: var(--bg-alt);
+      border-top: 1px solid var(--rule);
+    }
+    .colophon-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      gap: 20px;
+      padding-bottom: 28px;
+      border-bottom: 1px solid var(--rule);
+    }
+    .colophon-mark {
+      font-family: var(--serif);
+      font-weight: 800;
+      font-size: clamp(1.6rem, 4vw, 2.4rem);
+      letter-spacing: 0.02em;
+      color: var(--ink);
+    }
+    .colophon-folio {
+      font-family: var(--mono);
+      font-size: 11px;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--ink-faint);
+    }
+    .colophon-body {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 32px;
+      padding: 28px 0;
+      border-bottom: 1px solid var(--rule);
+    }
+    .col-block h5 {
+      font-family: var(--mono);
+      font-size: 10px;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--ink-faint);
+      font-weight: 500;
+      margin-bottom: 10px;
+    }
+    .col-block p, .col-block a {
+      font-size: 14px;
+      line-height: 1.6;
+      color: var(--ink-soft);
+    }
+    .col-block a {
+      display: inline-block;
+      border-bottom: 1px solid var(--rule-strong);
+      transition: color 0.3s ease, border-color 0.3s ease;
+    }
+    .col-block a:hover { color: var(--accent); border-color: var(--accent); }
+    .colophon-base {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      padding-top: 24px;
+      font-family: var(--mono);
+      font-size: 11px;
+      letter-spacing: 0.08em;
+      color: var(--ink-faint);
+    }
+    .colophon-base .set-in {
+      font-family: var(--serif);
+      font-style: italic;
+      font-size: 13px;
+      letter-spacing: 0;
+      color: var(--ink-soft);
+    }
+
+    /* ---------- REVEAL ANIMATION ---------- */
+    .reveal {
+      opacity: 0;
+      transform: translateY(18px);
+      transition: opacity 0.9s cubic-bezier(0.2, 0.8, 0.2, 1),
+                  transform 0.9s cubic-bezier(0.2, 0.8, 0.2, 1);
+    }
+    .reveal.in { opacity: 1; transform: none; }
+
+    /* ---------- RESPONSIVE ---------- */
+    @media (max-width: 860px) {
+      .stats-grid { grid-template-columns: 1fr 1fr; }
+      .stat:nth-child(3) { border-left: none; padding-left: 0; }
+      .stat:nth-child(3), .stat:nth-child(4) {
+        border-top: 1px solid var(--rule);
+      }
+      .projects-grid { grid-template-columns: 1fr; }
+      .project { border-right: none; }
+      .project:nth-child(2n) { border-right: none; }
+      .about-grid { grid-template-columns: 1fr; }
+      .colophon-body { grid-template-columns: 1fr 1fr; }
+    }
+
+    @media (max-width: 640px) {
+      body { font-size: 16px; }
+      .nav, .issue-info { display: none; }
+      .menu-btn {
+        display: inline-flex;
+        flex-direction: column;
+        gap: 5px;
+        background: none;
+        border: none;
+        cursor: pointer;
+        padding: 6px;
+      }
+      .menu-btn span {
+        display: block;
+        width: 22px; height: 1.5px;
+        background: var(--ink);
+        transition: transform 0.3s ease, opacity 0.3s ease;
+      }
+      .menu-btn.open span:nth-child(1) { transform: translateY(6.5px) rotate(45deg); }
+      .menu-btn.open span:nth-child(2) { opacity: 0; }
+      .menu-btn.open span:nth-child(3) { transform: translateY(-6.5px) rotate(-45deg); }
+
+      .mobile-nav {
+        display: none;
+        position: fixed;
+        top: 57px; left: 0; right: 0;
+        background: var(--bg);
+        border-bottom: 1px solid var(--rule);
+        padding: 20px var(--pad);
+        z-index: 49;
+        flex-direction: column;
+        gap: 18px;
+      }
+      .mobile-nav.open { display: flex; }
+      .mobile-nav a {
+        font-family: var(--serif);
+        font-size: 1.4rem;
+        color: var(--ink);
+        border-bottom: 1px solid var(--rule);
+        padding-bottom: 14px;
+      }
+      .mobile-nav a:last-child { border-bottom: none; }
+
+      .dateline-strip .inner { font-size: 10px; }
+      .dateline-strip .inner span:last-child { display: none; }
+
+      .stats-grid { grid-template-columns: 1fr; }
+      .stat {
+        border-left: none !important;
+        border-top: 1px solid var(--rule);
+        padding: 22px 0 !important;
+      }
+      .stat:first-child { border-top: none; }
+
+      .dispatch { grid-template-columns: 1fr; gap: 6px; }
+      .colophon-body { grid-template-columns: 1fr; gap: 22px; }
+      .colophon-top { flex-direction: column; align-items: flex-start; gap: 8px; }
+      .hero-meta { gap: 12px 18px; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        transition-duration: 0.01ms !important;
+      }
+      .reveal { opacity: 1; transform: none; }
+      html { scroll-behavior: auto; }
+    }
+  </style>
+  <link rel="stylesheet" href="../assets/shared.css" />
+</head>
+<body>
+  <a href="../index.html" class="gh-back-hub" aria-label="返回多元宇宙">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+    MULTIVERSE
+  </a>
+
+  <!-- ============== DATELINE STRIP ============== -->
+  <div class="dateline-strip">
+    <div class="inner">
+      <span>EST. 2026 · VOL. I · ISSUE 01</span>
+      <span class="live">Available for hire · Earth</span>
+    </div>
+  </div>
+
+  <!-- ============== MASTHEAD / NAV ============== -->
+  <header class="masthead">
+    <div class="masthead-inner">
+      <a href="#home" class="logo">JESSE ZEN</a>
+      <nav class="nav">
+        <a href="#home">Home</a>
+        <a href="#projects">Projects</a>
+        <a href="#blog">Blog</a>
+        <a href="#about">About</a>
+      </nav>
+      <span class="issue-info">Nº 01 · 2026</span>
+      <button class="menu-btn" aria-label="Toggle menu" aria-expanded="false">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </header>
+  <nav class="mobile-nav">
+    <a href="#home">Home</a>
+    <a href="#projects">Projects</a>
+    <a href="#blog">Blog</a>
+    <a href="#about">About</a>
+  </nav>
+
+  <main>
+
+    <!-- ============== HERO / COVER ============== -->
+    <section id="home" class="hero">
+      <div class="wrap">
+        <div class="hero-dateline reveal">
+          <span>EST. 2026</span><span class="dot"></span>
+          <span>Vol. I</span><span class="dot"></span>
+          <span>Issue 01</span><span class="dot"></span>
+          <span>A Portfolio</span>
+        </div>
+
+        <h1 class="hero-title reveal">
+          <span class="given">Jesse</span>
+          <span class="family">Zen</span>
+        </h1>
+
+        <p class="hero-sub reveal">Java Backend Developer — building distributed systems &amp; production-grade APIs.</p>
+
+        <div class="hero-meta reveal">
+          <span class="status-badge">Available for hire</span>
+          <span class="sep"></span>
+          <span>Earth</span>
+          <span class="sep"></span>
+          <span>Backend Architecture</span>
+          <span class="sep"></span>
+          <span>Distributed Systems</span>
+        </div>
+
+        <blockquote class="pullquote reveal">
+          <span class="mark">&ldquo;</span>Ship beats perfect &mdash; learn by building.<span class="mark">&rdquo;</span>
+          <cite>— A working philosophy</cite>
+        </blockquote>
+      </div>
+    </section>
+
+    <!-- ============== STATS ============== -->
+    <section id="numbers" class="stats">
+      <div class="wrap">
+        <div class="section-head reveal">
+          <span class="section-num">Nº 02</span>
+          <span class="section-title">By the Numbers</span>
+          <span class="section-rule"></span>
+          <span class="section-kicker">A record, in figures</span>
+        </div>
+        <div class="stats-grid reveal">
+          <div class="stat">
+            <div class="stat-num" data-github="stat:contributions">1,247</div>
+            <div class="stat-label">Contributions</div>
+          </div>
+          <div class="stat">
+            <div class="stat-num" data-github="stat:streak">42</div>
+            <div class="stat-label">Day Streak</div>
+          </div>
+          <div class="stat">
+            <div class="stat-num" data-github="stat:stars">312</div>
+            <div class="stat-label">Stars Earned</div>
+          </div>
+          <div class="stat">
+            <div class="stat-num" data-github="stat:repos">38</div>
+            <div class="stat-label">Repositories</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============== TECH STACK ============== -->
+    <section id="stack" class="stack">
+      <div class="wrap">
+        <div class="section-head reveal">
+          <span class="section-num">Nº 03</span>
+          <span class="section-title">The Instruments</span>
+          <span class="section-rule"></span>
+          <span class="section-kicker">Tools of the trade</span>
+        </div>
+        <p class="stack-lead reveal">
+          A decade-shaped kit for the backend craft &mdash; from the JVM to the
+          shell, chosen for reliability over fashion.
+        </p>
+        <div class="tags reveal">
+          <span class="tag"><span class="idx">01</span>Java</span>
+          <span class="tag"><span class="idx">02</span>Spring</span>
+          <span class="tag"><span class="idx">03</span>Redis</span>
+          <span class="tag"><span class="idx">04</span>MySQL</span>
+          <span class="tag"><span class="idx">05</span>Python</span>
+          <span class="tag"><span class="idx">06</span>Docker</span>
+          <span class="tag"><span class="idx">07</span>Linux</span>
+          <span class="tag"><span class="idx">08</span>Git</span>
+          <span class="tag"><span class="idx">09</span>Vim</span>
+          <span class="tag"><span class="idx">10</span>Nginx</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============== PROJECTS ============== -->
+    <section id="projects" class="projects">
+      <div class="wrap">
+        <div class="section-head reveal">
+          <span class="section-num">Nº 04</span>
+          <span class="section-title">Selected Works</span>
+          <span class="section-rule"></span>
+          <span class="section-kicker">Pinned repositories</span>
+        </div>
+        <div class="projects-grid reveal" data-github="repos:list">
+
+          <article class="project">
+            <div class="project-head">
+              <span class="project-num">01</span>
+              <span class="project-lang">Java</span>
+            </div>
+            <h3 class="project-title">spring-cloud-gateway-pro</h3>
+            <p class="project-desc">Production-ready API gateway with rate limiting &amp; auth.</p>
+            <div class="project-meta">
+              <span class="m">
+                <svg viewBox="0 0 16 16" width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"><path d="M8 1.5l1.85 4.3 4.65.4-3.5 3.05 1.05 4.55L8 11.55 3.95 13.85l1.05-4.55L1.5 6.2l4.65-.4z"/></svg>
+                128
+              </span>
+              <span class="m">
+                <svg viewBox="0 0 16 16" width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"><circle cx="4" cy="3" r="1.6"/><circle cx="12" cy="3" r="1.6"/><circle cx="8" cy="13" r="1.6"/><path d="M4 4.6v2.2a2 2 0 0 0 2 2h4a2 2 0 0 0 2-2V4.6M8 8.8v2.6"/></svg>
+                34
+              </span>
+            </div>
+          </article>
+
+          <article class="project">
+            <div class="project-head">
+              <span class="project-num">02</span>
+              <span class="project-lang">Java</span>
+            </div>
+            <h3 class="project-title">distributed-task-scheduler</h3>
+            <p class="project-desc">Fault-tolerant distributed task scheduling framework.</p>
+            <div class="project-meta">
+              <span class="m">
+                <svg viewBox="0 0 16 16" width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"><path d="M8 1.5l1.85 4.3 4.65.4-3.5 3.05 1.05 4.55L8 11.55 3.95 13.85l1.05-4.55L1.5 6.2l4.65-.4z"/></svg>
+                87
+              </span>
+              <span class="m">
+                <svg viewBox="0 0 16 16" width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"><circle cx="4" cy="3" r="1.6"/><circle cx="12" cy="3" r="1.6"/><circle cx="8" cy="13" r="1.6"/><path d="M4 4.6v2.2a2 2 0 0 0 2 2h4a2 2 0 0 0 2-2V4.6M8 8.8v2.6"/></svg>
+                21
+              </span>
+            </div>
+          </article>
+
+          <article class="project">
+            <div class="project-head">
+              <span class="project-num">03</span>
+              <span class="project-lang">Java</span>
+            </div>
+            <h3 class="project-title">redis-cache-toolkit</h3>
+            <p class="project-desc">Smart caching utilities with Redis &amp; Spring integration.</p>
+            <div class="project-meta">
+              <span class="m">
+                <svg viewBox="0 0 16 16" width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"><path d="M8 1.5l1.85 4.3 4.65.4-3.5 3.05 1.05 4.55L8 11.55 3.95 13.85l1.05-4.55L1.5 6.2l4.65-.4z"/></svg>
+                54
+              </span>
+              <span class="m">
+                <svg viewBox="0 0 16 16" width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"><circle cx="4" cy="3" r="1.6"/><circle cx="12" cy="3" r="1.6"/><circle cx="8" cy="13" r="1.6"/><path d="M4 4.6v2.2a2 2 0 0 0 2 2h4a2 2 0 0 0 2-2V4.6M8 8.8v2.6"/></svg>
+                12
+              </span>
+            </div>
+          </article>
+
+          <article class="project">
+            <div class="project-head">
+              <span class="project-num">04</span>
+              <span class="project-lang">Java</span>
+            </div>
+            <h3 class="project-title">leetcode-java-solutions</h3>
+            <p class="project-desc">300+ LeetCode solutions with detailed explanations.</p>
+            <div class="project-meta">
+              <span class="m">
+                <svg viewBox="0 0 16 16" width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"><path d="M8 1.5l1.85 4.3 4.65.4-3.5 3.05 1.05 4.55L8 11.55 3.95 13.85l1.05-4.55L1.5 6.2l4.65-.4z"/></svg>
+                43
+              </span>
+              <span class="m">
+                <svg viewBox="0 0 16 16" width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"><circle cx="4" cy="3" r="1.6"/><circle cx="12" cy="3" r="1.6"/><circle cx="8" cy="13" r="1.6"/><path d="M4 4.6v2.2a2 2 0 0 0 2 2h4a2 2 0 0 0 2-2V4.6M8 8.8v2.6"/></svg>
+                67
+              </span>
+            </div>
+          </article>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- ============== BLOG ============== -->
+    <section id="blog" class="blog" data-github="blog:list">
+      <div class="wrap">
+        <div class="section-head reveal">
+          <span class="section-num">Nº 05</span>
+          <span class="section-title">Essays &amp; Field Notes</span>
+          <span class="section-rule"></span>
+          <span class="section-kicker">From the journal</span>
+        </div>
+
+        <article class="article reveal">
+          <div class="article-meta">
+            <span>2024 · 03 · 15</span>
+            <span class="sep"></span>
+            <span>8 min read</span>
+            <span class="sep"></span>
+            <span class="article-cat">Spring Boot</span>
+          </div>
+          <h3 class="article-title">深入理解 Spring Boot 3 的自动配置机制</h3>
+          <p class="article-excerpt">自动配置是 Spring Boot 的灵魂。本文剖析 @AutoConfiguration 注解的工作原理，从 spring.factories 到 AutoConfiguration.imports 的演进，揭示条件装配在底层是如何被求值与排序的。</p>
+          <a href="#" class="article-link">Continue reading →</a>
+        </article>
+
+        <article class="article reveal">
+          <div class="article-meta">
+            <span>2024 · 02 · 28</span>
+            <span class="sep"></span>
+            <span>12 min read</span>
+            <span class="sep"></span>
+            <span class="article-cat">Redis</span>
+          </div>
+          <h3 class="article-title">Redis 分布式锁的几种实现方式对比</h3>
+          <p class="article-excerpt">从 SETNX 到 Redlock，分布式锁的实现从未简单。我们对比四种方案的正确性、性能与容错边界，并给出生产环境中真正可用的选择建议。</p>
+          <a href="#" class="article-link">Continue reading →</a>
+        </article>
+
+        <article class="article reveal">
+          <div class="article-meta">
+            <span>2024 · 02 · 10</span>
+            <span class="sep"></span>
+            <span>15 min read</span>
+            <span class="sep"></span>
+            <span class="article-cat">Microservices</span>
+          </div>
+          <h3 class="article-title">从零搭建高可用微服务架构</h3>
+          <p class="article-excerpt">服务拆分、注册发现、配置中心、网关、熔断——一套高可用微服务架构的搭建远不止技术选型。本文记录从零开始的完整实践与那些深夜里的踩坑。</p>
+          <a href="#" class="article-link">Continue reading →</a>
+        </article>
+
+        <article class="article reveal">
+          <div class="article-meta">
+            <span>2024 · 01 · 20</span>
+            <span class="sep"></span>
+            <span>10 min read</span>
+            <span class="sep"></span>
+            <span class="article-cat">JVM</span>
+          </div>
+          <h3 class="article-title">JVM 调优实战：GC 日志分析指南</h3>
+          <p class="article-excerpt">GC 日志是 JVM 的体检报告。学会读懂它，才能精准定位停顿、内存泄漏与吞吐瓶颈。本文以真实生产案例拆解 G1 日志的每一个字段。</p>
+          <a href="#" class="article-link">Continue reading →</a>
+        </article>
+
+      </div>
+    </section>
+
+    <!-- ============== DISPATCHES / ACTIVITY ============== -->
+    <section id="dispatches" class="dispatches">
+      <div class="wrap">
+        <div class="section-head reveal">
+          <span class="section-num">Nº 06</span>
+          <span class="section-title">Dispatches</span>
+          <span class="section-rule"></span>
+          <span class="section-kicker">Recent activity</span>
+        </div>
+        <div class="timeline reveal" data-github="activity:list">
+
+          <div class="dispatch">
+            <div class="dispatch-time">2 hours ago</div>
+            <div class="dispatch-body">
+              <div class="dispatch-action">Pushed to <span class="repo">spring-cloud-gateway-pro</span></div>
+              <div class="dispatch-desc">feat: add Redis caching layer to user service</div>
+            </div>
+          </div>
+
+          <div class="dispatch">
+            <div class="dispatch-time">1 day ago</div>
+            <div class="dispatch-body">
+              <div class="dispatch-action">PR merged in <span class="repo">distributed-task-scheduler</span></div>
+              <div class="dispatch-desc">refactor: migrate payment module to Spring Boot 3</div>
+            </div>
+          </div>
+
+          <div class="dispatch">
+            <div class="dispatch-time">3 days ago</div>
+            <div class="dispatch-body">
+              <div class="dispatch-action">Released <span class="repo">redis-cache-toolkit</span> v2.1.0</div>
+              <div class="dispatch-desc">Added smart invalidation and Lua scripting support</div>
+            </div>
+          </div>
+
+          <div class="dispatch">
+            <div class="dispatch-time">5 days ago</div>
+            <div class="dispatch-body">
+              <div class="dispatch-action">Fixed critical bug in <span class="repo">payment-service</span></div>
+              <div class="dispatch-desc">resolve distributed lock race condition</div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- ============== ABOUT / INTERESTS ============== -->
+    <section id="about" class="about">
+      <div class="wrap">
+        <div class="section-head reveal">
+          <span class="section-num">Nº 07</span>
+          <span class="section-title">About the Author</span>
+          <span class="section-rule"></span>
+          <span class="section-kicker">A short biography</span>
+        </div>
+        <div class="about-grid">
+          <div class="about-body reveal">
+            <p class="lead">Jesse Zen is a Java backend developer based on Earth, building distributed systems and production-grade APIs that hold up under load. The work lives at the intersection of reliability and simplicity &mdash; shipping software that survives real traffic, learning by building, and refining the craft one commit at a time.</p>
+            <p>Most days are spent in the JVM ecosystem: designing service boundaries, tuning garbage collectors, and arguing (politely) about cache invalidation. The rest goes to open source, LeetCode, and the quiet conviction that a well-named variable is its own kind of literature.</p>
+            <p class="signoff">— Ship beats perfect. Learn by building.</p>
+          </div>
+          <aside class="interests reveal">
+            <h4>Interests &amp; Focus</h4>
+            <ul>
+              <li><span class="n">01</span>Backend Architecture</li>
+              <li><span class="n">02</span>Distributed Systems</li>
+              <li><span class="n">03</span>AI Integration</li>
+              <li><span class="n">04</span>Open Source</li>
+              <li><span class="n">05</span>LeetCode</li>
+              <li><span class="n">06</span>Vim &amp; the Shell</li>
+              <li><span class="n">07</span>Coffee</li>
+              <li><span class="n">08</span>Typography</li>
+            </ul>
+          </aside>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ============== COLOPHON / FOOTER ============== -->
+  <footer class="colophon">
+    <div class="wrap">
+      <div class="colophon-top">
+        <div class="colophon-mark">JESSE ZEN</div>
+        <div class="colophon-folio">Folio · Nº 01 · MMXXVI</div>
+      </div>
+      <div class="colophon-body">
+        <div class="col-block">
+          <h5>Correspondence</h5>
+          <p>Open to backend roles, contract work, and the occasional interesting problem.</p>
+        </div>
+        <div class="col-block">
+          <h5>Elsewhere</h5>
+          <p><a href="https://github.com/stuAccount" target="_blank" rel="noopener">github.com/stuAccount</a></p>
+        </div>
+        <div class="col-block">
+          <h5>Location</h5>
+          <p>Earth · Remote-friendly · UTC+8</p>
+        </div>
+      </div>
+      <div class="colophon-base">
+        <span>© <span id="year">2026</span> Jesse Zen. All rights reserved.</span>
+        <span class="set-in">Set in Playfair Display &amp; Inter.</span>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    (function () {
+      "use strict";
+
+      // ---- Dynamic year ----
+      var y = document.getElementById("year");
+      if (y) y.textContent = new Date().getFullYear();
+
+      // ---- Mobile menu ----
+      var btn = document.querySelector(".menu-btn");
+      var mnav = document.querySelector(".mobile-nav");
+      if (btn && mnav) {
+        btn.addEventListener("click", function () {
+          var open = mnav.classList.toggle("open");
+          btn.classList.toggle("open", open);
+          btn.setAttribute("aria-expanded", open ? "true" : "false");
+        });
+        mnav.querySelectorAll("a").forEach(function (a) {
+          a.addEventListener("click", function () {
+            mnav.classList.remove("open");
+            btn.classList.remove("open");
+            btn.setAttribute("aria-expanded", "false");
+          });
+        });
+      }
+
+      // ---- Scroll reveal ----
+      var reveals = document.querySelectorAll(".reveal");
+      if ("IntersectionObserver" in window) {
+        var io = new IntersectionObserver(function (entries) {
+          entries.forEach(function (e) {
+            if (e.isIntersecting) {
+              e.target.classList.add("in");
+              io.unobserve(e.target);
+            }
+          });
+        }, { threshold: 0.12, rootMargin: "0px 0px -8% 0px" });
+        reveals.forEach(function (el, i) {
+          el.style.transitionDelay = Math.min(i * 60, 240) + "ms";
+          io.observe(el);
+        });
+      } else {
+        reveals.forEach(function (el) { el.classList.add("in"); });
+      }
+
+      // ---- Active nav link on scroll ----
+      var navLinks = document.querySelectorAll(".nav a");
+      var sections = [];
+      navLinks.forEach(function (link) {
+        var id = link.getAttribute("href");
+        if (id && id.charAt(0) === "#") {
+          var sec = document.querySelector(id);
+          if (sec) sections.push({ sec: sec, link: link });
+        }
+      });
+      if ("IntersectionObserver" in window && sections.length) {
+        var spy = new IntersectionObserver(function (entries) {
+          entries.forEach(function (e) {
+            var match = sections.filter(function (s) { return s.sec === e.target; })[0];
+            if (match && e.isIntersecting) {
+              navLinks.forEach(function (l) { l.classList.remove("active"); });
+              match.link.classList.add("active");
+            }
+          });
+        }, { threshold: 0, rootMargin: "-45% 0px -50% 0px" });
+        sections.forEach(function (s) { spy.observe(s.sec); });
+      }
+    })();
+  </script>
+  <script src="../config.js"></script>
+  <script src="../github-api.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      if (window.GitHubAPI) GitHubAPI.init();
+    });
+  </script>
+</body>
+</html>

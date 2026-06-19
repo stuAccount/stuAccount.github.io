@@ -1,31 +1,1254 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="zh-CN">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Zen - Portfolio</title>
-  <link rel="stylesheet" href="style.css" />
+  <title>MULTIVERSE · Jesse Zen</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;600&family=Orbitron:wght@600;800;900&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="./assets/shared.css" />
+  <script type="importmap">
+  {
+    "imports": {
+      "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js",
+      "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"
+    }
+  }
+  </script>
+  <style>
+    :root {
+      --bg: #050510;
+      --bg-deep: #02020a;
+      --text: #e2e8f0;
+      --text-dim: #94a3b8;
+      --text-muted: #475569;
+      --cyan: #00f0ff;
+      --purple: #a855f7;
+      --pink: #ec4899;
+      --gold: #ffd700;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    html, body {
+      height: 100%;
+      overflow: hidden;
+    }
+
+    body {
+      background: var(--bg-deep);
+      color: var(--text);
+      font-family: 'Space Grotesk', sans-serif;
+      position: relative;
+      user-select: none;
+    }
+
+    /* ===== 星空背景 ===== */
+    .starfield {
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+      overflow: hidden;
+    }
+
+    .starfield::before,
+    .starfield::after {
+      content: '';
+      position: absolute;
+      inset: -50%;
+      width: 200%;
+      height: 200%;
+    }
+
+    .starfield::before {
+      background-image:
+        radial-gradient(1px 1px at 20% 30%, white, transparent),
+        radial-gradient(1px 1px at 60% 70%, white, transparent),
+        radial-gradient(1px 1px at 80% 10%, white, transparent),
+        radial-gradient(2px 2px at 40% 50%, rgba(255,255,255,0.8), transparent),
+        radial-gradient(1px 1px at 10% 80%, white, transparent),
+        radial-gradient(1px 1px at 90% 40%, white, transparent),
+        radial-gradient(1px 1px at 33% 15%, white, transparent),
+        radial-gradient(1px 1px at 77% 88%, white, transparent),
+        radial-gradient(2px 2px at 55% 25%, rgba(0,240,255,0.6), transparent),
+        radial-gradient(1px 1px at 15% 60%, white, transparent);
+      background-size: 400px 400px;
+      animation: drift 120s linear infinite;
+    }
+
+    .starfield::after {
+      background-image:
+        radial-gradient(1px 1px at 25% 35%, rgba(168,85,247,0.8), transparent),
+        radial-gradient(1px 1px at 75% 65%, rgba(0,240,255,0.6), transparent),
+        radial-gradient(2px 2px at 50% 50%, rgba(236,72,153,0.5), transparent),
+        radial-gradient(1px 1px at 85% 20%, white, transparent),
+        radial-gradient(1px 1px at 5% 90%, white, transparent);
+      background-size: 600px 600px;
+      animation: drift 180s linear infinite reverse;
+    }
+
+    @keyframes drift {
+      from { transform: translate(0, 0); }
+      to { transform: translate(-400px, -400px); }
+    }
+
+    /* ===== 星云 ===== */
+    .nebula {
+      position: fixed;
+      border-radius: 50%;
+      filter: blur(80px);
+      opacity: 0.4;
+      z-index: 0;
+      pointer-events: none;
+    }
+
+    .nebula-1 {
+      width: 500px;
+      height: 500px;
+      background: radial-gradient(circle, var(--purple), transparent 70%);
+      top: -100px;
+      left: -100px;
+      animation: float-nebula 20s ease-in-out infinite;
+    }
+
+    .nebula-2 {
+      width: 400px;
+      height: 400px;
+      background: radial-gradient(circle, var(--cyan), transparent 70%);
+      bottom: -50px;
+      right: -50px;
+      animation: float-nebula 25s ease-in-out infinite reverse;
+    }
+
+    .nebula-3 {
+      width: 300px;
+      height: 300px;
+      background: radial-gradient(circle, var(--pink), transparent 70%);
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      opacity: 0.2;
+      animation: float-nebula 30s ease-in-out infinite;
+    }
+
+    @keyframes float-nebula {
+      0%, 100% { transform: translate(0, 0) scale(1); }
+      33% { transform: translate(30px, -20px) scale(1.1); }
+      66% { transform: translate(-20px, 30px) scale(0.95); }
+    }
+
+    /* ===== 顶部信息 ===== */
+    .top-bar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 100;
+      padding: 24px 40px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      pointer-events: none;
+    }
+
+    .top-bar > * { pointer-events: auto; }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-family: 'Orbitron', sans-serif;
+      font-weight: 800;
+      font-size: 14px;
+      letter-spacing: 2px;
+      color: var(--text);
+    }
+
+    .logo-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: var(--cyan);
+      box-shadow: 0 0 12px var(--cyan), 0 0 24px var(--cyan);
+      animation: pulse-dot 2s infinite;
+    }
+
+    @keyframes pulse-dot {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.6; transform: scale(0.8); }
+    }
+
+    .status {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 14px;
+      border-radius: 20px;
+      background: rgba(34, 197, 94, 0.1);
+      border: 1px solid rgba(34, 197, 94, 0.3);
+      font-size: 12px;
+      color: #22c55e;
+      font-weight: 500;
+      backdrop-filter: blur(8px);
+    }
+
+    .status-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: #22c55e;
+      box-shadow: 0 0 6px #22c55e;
+      animation: pulse-dot 2s infinite;
+    }
+
+    /* ===== 中央标题（顶部居中） ===== */
+    .hero-text {
+      position: fixed;
+      top: 70px;
+      left: 50%;
+      transform: translateX(-50%);
+      text-align: center;
+      z-index: 5;
+      pointer-events: none;
+      width: 100%;
+      max-width: 900px;
+      padding: 0 24px;
+    }
+
+    .hero-text h1 {
+      font-family: 'Orbitron', sans-serif;
+      font-size: clamp(28px, 5vw, 56px);
+      font-weight: 900;
+      letter-spacing: clamp(2px, 1vw, 8px);
+      line-height: 1;
+      background: linear-gradient(135deg, #fff 0%, var(--cyan) 30%, var(--purple) 60%, var(--pink) 100%);
+      background-size: 200% 200%;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      animation: gradient-shift 8s ease infinite;
+      margin-bottom: 6px;
+      opacity: 0.9;
+    }
+
+    @keyframes gradient-shift {
+      0%, 100% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+    }
+
+    .hero-text .tagline {
+      font-size: clamp(11px, 1.5vw, 13px);
+      color: var(--text-dim);
+      letter-spacing: 4px;
+      text-transform: uppercase;
+      font-weight: 300;
+    }
+
+    .hero-text .name {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      color: var(--text-muted);
+      margin-top: 6px;
+      letter-spacing: 1px;
+    }
+
+    /* ===== Three.js 3D 角色舞台 ===== */
+    .character-stage {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 10;
+    }
+
+    #threeCanvas {
+      width: 100%;
+      height: 100%;
+      display: block;
+    }
+
+    /* ===== 聚光灯 & 地面阴影 ===== */
+    .character-spotlight {
+      position: absolute;
+      top: 5%;
+      left: 50%;
+      width: 500px;
+      height: 600px;
+      transform: translateX(-50%);
+      background: radial-gradient(ellipse at center top, var(--stage-glow, rgba(255,255,255,0.08)) 0%, transparent 70%);
+      pointer-events: none;
+      z-index: 1;
+    }
+
+    .character-ground-shadow {
+      position: absolute;
+      bottom: 15%;
+      left: 50%;
+      width: 300px;
+      height: 30px;
+      transform: translateX(-50%);
+      background: radial-gradient(ellipse, rgba(0,0,0,0.4) 0%, transparent 70%);
+      filter: blur(15px);
+      z-index: 2;
+    }
+
+    /* ===== 侧边宇宙选择器 ===== */
+    .universe-selector {
+      position: fixed;
+      left: 30px;
+      top: 50%;
+      transform: translateY(-50%);
+      z-index: 50;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .selector-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 10px 16px;
+      cursor: pointer;
+      border-radius: 8px;
+      transition: all 0.3s ease;
+      opacity: 0.5;
+    }
+
+    .selector-item:hover {
+      opacity: 0.8;
+      background: rgba(255,255,255,0.05);
+    }
+
+    .selector-item.active {
+      opacity: 1;
+      background: rgba(255,255,255,0.08);
+    }
+
+    .selector-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--dot-color, #fff);
+      transition: transform 0.3s;
+    }
+
+    .selector-item.active .selector-dot {
+      transform: scale(1.5);
+      box-shadow: 0 0 10px var(--dot-color, #fff);
+    }
+
+    .selector-name {
+      font-size: 14px;
+      color: #fff;
+      font-weight: 500;
+      white-space: nowrap;
+    }
+
+    .selector-num {
+      font-size: 11px;
+      color: rgba(255,255,255,0.4);
+      font-family: monospace;
+    }
+
+    /* ===== 底部 HUD ===== */
+    .character-hud {
+      position: fixed;
+      bottom: 60px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 50;
+      text-align: center;
+      opacity: 0;
+      transition: opacity 0.4s ease;
+      pointer-events: none;
+      max-width: 500px;
+    }
+
+    .character-hud.visible {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .hud-name {
+      font-size: 32px;
+      font-weight: 700;
+      color: #fff;
+      margin-bottom: 4px;
+    }
+
+    .hud-name-en {
+      font-size: 13px;
+      color: rgba(255,255,255,0.5);
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      margin-bottom: 12px;
+    }
+
+    .hud-desc {
+      font-size: 14px;
+      color: rgba(255,255,255,0.7);
+      margin-bottom: 20px;
+      line-height: 1.6;
+    }
+
+    .hud-enter-btn {
+      display: inline-block;
+      padding: 12px 32px;
+      border: 1px solid rgba(255,255,255,0.3);
+      border-radius: 30px;
+      color: #fff;
+      font-size: 15px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      background: rgba(255,255,255,0.05);
+      backdrop-filter: blur(10px);
+    }
+
+    .hud-enter-btn:hover {
+      background: rgba(255,255,255,0.15);
+      border-color: rgba(255,255,255,0.5);
+      transform: scale(1.05);
+    }
+
+    /* ===== 导航箭头 & 计数器 ===== */
+    .nav-arrow {
+      position: fixed;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 48px;
+      height: 48px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 32px;
+      color: rgba(255,255,255,0.5);
+      cursor: pointer;
+      z-index: 50;
+      transition: all 0.3s;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.05);
+      backdrop-filter: blur(10px);
+      user-select: none;
+    }
+
+    .nav-arrow:hover {
+      color: #fff;
+      background: rgba(255,255,255,0.15);
+    }
+
+    .nav-prev { left: 200px; }
+    .nav-next { right: 30px; }
+
+    .universe-counter {
+      position: fixed;
+      bottom: 30px;
+      right: 30px;
+      z-index: 50;
+      color: rgba(255,255,255,0.5);
+      font-family: monospace;
+      font-size: 14px;
+    }
+
+    .current-num {
+      color: #fff;
+      font-size: 18px;
+      font-weight: 700;
+    }
+
+    /* ===== Warp 效果（7 种过渡动画） ===== */
+    .warp-overlay {
+      position: fixed;
+      inset: 0;
+      z-index: 200;
+      pointer-events: none;
+      opacity: 0;
+      transition: opacity 0.3s;
+      overflow: hidden;
+    }
+
+    .warp-overlay.active {
+      opacity: 1;
+    }
+
+    /* 1. Glitch Dissolve (neon-cyber) - RGB 分裂 + 数字噪点 */
+    .warp-overlay[data-warp="glitch"] {
+      background: #0a0a0f;
+    }
+    .warp-overlay[data-warp="glitch"]::before,
+    .warp-overlay[data-warp="glitch"]::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: var(--warp-color, #00f0ff);
+      mix-blend-mode: screen;
+    }
+    .warp-overlay[data-warp="glitch"].active::before {
+      animation: glitch-r 0.5s steps(8) forwards;
+    }
+    .warp-overlay[data-warp="glitch"].active::after {
+      animation: glitch-b 0.5s steps(8) forwards;
+    }
+    @keyframes glitch-r {
+      0% { transform: translate(0); opacity: 0; clip-path: inset(0 0 0 0); }
+      20% { transform: translate(-10px, 2px); opacity: 0.8; clip-path: inset(20% 0 30% 0); }
+      40% { transform: translate(8px, -3px); opacity: 0.6; clip-path: inset(50% 0 10% 0); }
+      60% { transform: translate(-5px, 1px); opacity: 0.9; clip-path: inset(10% 0 60% 0); }
+      80% { transform: translate(3px, -1px); opacity: 0.4; clip-path: inset(70% 0 5% 0); }
+      100% { transform: translate(0); opacity: 1; clip-path: inset(0 0 0 0); }
+    }
+    @keyframes glitch-b {
+      0% { transform: translate(0); opacity: 0; }
+      25% { transform: translate(10px, -2px); opacity: 0.7; }
+      50% { transform: translate(-8px, 3px); opacity: 0.5; }
+      75% { transform: translate(5px, -1px); opacity: 0.8; }
+      100% { transform: translate(0); opacity: 1; }
+    }
+
+    /* 2. CRT Power-off (terminal-geek) - 屏幕收缩为水平线 */
+    .warp-overlay[data-warp="crt"] {
+      background: #000;
+    }
+    .warp-overlay[data-warp="crt"].active {
+      animation: crt-off 0.6s ease-in forwards;
+    }
+    @keyframes crt-off {
+      0% { clip-path: inset(0 0 0 0); }
+      40% { clip-path: inset(45% 0 45% 0); }
+      60% { clip-path: inset(49% 0 49% 0); background: #00ff41; }
+      80% { clip-path: inset(49.5% 0 49.5% 0); background: #00ff41; opacity: 1; }
+      100% { clip-path: inset(50% 0 50% 0); background: #00ff41; opacity: 0; }
+    }
+
+    /* 3. Hard Slam (brutalist) - 屏幕震动 + 硬闪 */
+    .warp-overlay[data-warp="slam"] {
+      background: #ffd400;
+    }
+    .warp-overlay[data-warp="slam"].active {
+      animation: slam-shake 0.5s steps(4) forwards;
+    }
+    @keyframes slam-shake {
+      0% { transform: translate(0, 0); opacity: 0; }
+      25% { transform: translate(-20px, 10px); opacity: 0.9; }
+      50% { transform: translate(15px, -8px); opacity: 1; }
+      75% { transform: translate(-10px, 5px); opacity: 0.9; }
+      100% { transform: translate(0, 0); opacity: 1; }
+    }
+
+    /* 4. Page Flip (editorial) - 3D 翻页 */
+    .warp-overlay[data-warp="flip"] {
+      background: #f5f2ed;
+      transform-origin: left center;
+    }
+    .warp-overlay[data-warp="flip"].active {
+      animation: page-flip 0.6s ease-in forwards;
+    }
+    @keyframes page-flip {
+      0% { transform: perspective(800px) rotateY(0deg); opacity: 0; }
+      50% { transform: perspective(800px) rotateY(-90deg); opacity: 1; }
+      100% { transform: perspective(800px) rotateY(-180deg); opacity: 0; }
+    }
+
+    /* 5. Glass Shatter (glassmorphism) - 破碎 + 碎片 */
+    .warp-overlay[data-warp="shatter"] {
+      background: linear-gradient(135deg, #667eea, #764ba2);
+    }
+    .warp-overlay[data-warp="shatter"].active {
+      animation: shatter 0.5s ease-out forwards;
+    }
+    @keyframes shatter {
+      0% { opacity: 0; transform: scale(0.8); filter: blur(0); }
+      30% { opacity: 1; transform: scale(1); filter: blur(0); }
+      60% { opacity: 1; transform: scale(1.05); filter: blur(2px); }
+      100% { opacity: 0; transform: scale(1.2); filter: blur(10px); }
+    }
+
+    /* 6. Warp Speed (retro-future) - 径向条纹（增强版） */
+    .warp-overlay[data-warp="warp"] {
+      background: var(--bg-deep);
+    }
+    .warp-overlay[data-warp="warp"]::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(circle at center, transparent 0%, var(--bg-deep) 100%);
+    }
+    .warp-lines {
+      position: absolute;
+      inset: 0;
+      overflow: hidden;
+      z-index: 1;
+    }
+    .warp-line {
+      position: absolute;
+      width: 2px;
+      height: 100px;
+      background: linear-gradient(to bottom, transparent, var(--warp-color, var(--cyan)), transparent);
+      top: 50%;
+      left: 50%;
+      transform-origin: center top;
+      opacity: 0;
+    }
+    .warp-overlay[data-warp="warp"].active .warp-line {
+      animation: warp-streak 0.6s ease-out forwards;
+    }
+    @keyframes warp-streak {
+      0% {
+        opacity: 0;
+        transform: rotate(var(--angle)) translateY(0) scaleY(0);
+      }
+      50% {
+        opacity: 1;
+      }
+      100% {
+        opacity: 0;
+        transform: rotate(var(--angle)) translateY(-400px) scaleY(2);
+      }
+    }
+
+    /* 7. Ink Splash (ink-minimal) - 水墨扩散 */
+    .warp-overlay[data-warp="ink"] {
+      background: transparent;
+    }
+    .warp-overlay[data-warp="ink"]::before {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 0;
+      height: 0;
+      border-radius: 50%;
+      background: #1a1a1a;
+      transform: translate(-50%, -50%);
+    }
+    .warp-overlay[data-warp="ink"].active::before {
+      animation: ink-spread 0.6s ease-out forwards;
+    }
+    @keyframes ink-spread {
+      0% { width: 0; height: 0; opacity: 0; }
+      40% { width: 50vmax; height: 50vmax; opacity: 0.7; }
+      70% { width: 120vmax; height: 120vmax; opacity: 0.95; }
+      100% { width: 200vmax; height: 200vmax; opacity: 1; }
+    }
+
+    /* ===== 响应式 ===== */
+    @media (max-width: 768px) {
+      .top-bar { padding: 16px 20px; }
+
+      .universe-selector {
+        left: 0;
+        right: 0;
+        bottom: 0;
+        top: auto;
+        transform: none;
+        flex-direction: row;
+        overflow-x: auto;
+        padding: 10px;
+        background: rgba(0,0,0,0.5);
+        backdrop-filter: blur(10px);
+      }
+
+      .selector-name { display: none; }
+
+      .nav-prev { left: 10px; }
+      .nav-next { right: 10px; }
+
+      .character-hud { bottom: 80px; max-width: 90%; }
+      .hud-name { font-size: 24px; }
+    }
+
+    /* ===== 加载动画 ===== */
+    .loader {
+      position: fixed;
+      inset: 0;
+      z-index: 9999;
+      background: var(--bg-deep);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      gap: 20px;
+      transition: opacity 0.6s, visibility 0.6s;
+    }
+
+    .loader.hidden {
+      opacity: 0;
+      visibility: hidden;
+    }
+
+    .loader-ring {
+      width: 60px;
+      height: 60px;
+      border: 2px solid rgba(255,255,255,0.1);
+      border-top-color: var(--cyan);
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    .loader-text {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12px;
+      color: var(--text-muted);
+      letter-spacing: 2px;
+      text-transform: uppercase;
+    }
+  </style>
 </head>
 <body>
-  <header>
-    <h1>Zen</h1>
-    <p class="tagline">Aspiring Developer | Portfolio in Progress</p>
-  </header>
+  <!-- 加载动画 -->
+  <div class="loader" id="loader">
+    <div class="loader-ring"></div>
+    <div class="loader-text">Initializing Multiverse...</div>
+  </div>
 
-  <main>
-    <section>
-      <h2>About Me</h2>
-      <p>Welcome! I'm currently building this site and will add more content soon. Stay tuned!</p>
-    </section>
+  <!-- 独立兜底：不依赖 Three.js 模块，3秒后强制隐藏 loader -->
+  <script>
+    window.addEventListener('error', function(e) {
+      console.error('[页面错误]', e.message);
+    });
+    setTimeout(function() {
+      var el = document.getElementById('loader');
+      if (el) el.classList.add('hidden');
+    }, 3500);
+  </script>
 
-    <section>
-      <h2>Contact</h2>
-      <p>GitHub: <a href="https://github.com/stuAccount" target="_blank">github.com/stuAccount</a></p>
-    </section>
-  </main>
+  <!-- 星空背景 -->
+  <div class="starfield"></div>
+  <div class="nebula nebula-1"></div>
+  <div class="nebula nebula-2"></div>
+  <div class="nebula nebula-3"></div>
 
-  <footer>
-    <p>© 2025 Zen</p>
-  </footer>
+  <!-- Warp 效果 -->
+  <div class="warp-overlay" id="warp">
+    <div class="warp-lines" id="warpLines"></div>
+  </div>
+
+  <!-- 顶部栏 -->
+  <div class="top-bar">
+    <div class="logo">
+      <span class="logo-dot"></span>
+      <span>MULTIVERSE</span>
+    </div>
+    <div class="status">
+      <span class="status-dot"></span>
+      <span>Available for hire</span>
+    </div>
+  </div>
+
+  <!-- 中央标题（顶部居中） -->
+  <div class="hero-text">
+    <h1>MULTIVERSE</h1>
+    <p class="tagline">Seven Parallel Universes</p>
+    <p class="name" id="heroName">Jesse Zen · Java Backend Developer</p>
+  </div>
+
+  <!-- Three.js 3D 角色舞台 -->
+  <div class="character-stage" id="characterStage">
+    <canvas id="threeCanvas"></canvas>
+    <div class="character-spotlight"></div>
+    <div class="character-ground-shadow"></div>
+  </div>
+
+  <!-- 侧边宇宙选择器 -->
+  <div class="universe-selector" id="universeSelector">
+    <!-- 7 selector items generated by JS -->
+  </div>
+
+  <!-- 底部 HUD -->
+  <div class="character-hud" id="characterHud">
+    <div class="hud-name"></div>
+    <div class="hud-name-en"></div>
+    <div class="hud-desc"></div>
+    <div class="hud-enter-btn">进入宇宙 →</div>
+  </div>
+
+  <!-- 导航箭头 -->
+  <div class="nav-arrow nav-prev">‹</div>
+  <div class="nav-arrow nav-next">›</div>
+
+  <!-- 计数器 -->
+  <div class="universe-counter">
+    <span class="current-num">01</span> / <span class="total-num">07</span>
+  </div>
+
+  <script src="./config.js"></script>
+  <script src="./github-api.js"></script>
+  <script type="module">
+    import * as THREE from 'three';
+    import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
+
+    var universes = window.SITE_CONFIG.universes;
+    var heroName = document.getElementById('heroName');
+
+    heroName.textContent = window.SITE_CONFIG.name + " · " + window.SITE_CONFIG.role;
+    document.querySelector('.total-num').textContent = String(universes.length).padStart(2, '0');
+
+    // ===== 状态机 =====
+    var CharacterState = { IDLE: 'idle', ENTERING: 'entering' };
+    var currentState = CharacterState.IDLE;
+    var current = 0;
+    var isLocked = false;
+    var modelReady = false;
+
+    var stage = document.getElementById('characterStage');
+    var selector = document.getElementById('universeSelector');
+    var hud = document.getElementById('characterHud');
+    var currentNum = document.querySelector('.current-num');
+    var canvas = document.getElementById('threeCanvas');
+
+    // ===== 舞台配置 =====
+    var STAGE_SPACING = 3.4;   // 角色水平间距
+    var STAGE_DEPTH = 1.2;     // 每级后退深度
+    var STAGE_VISIBLE = 2;     // 两侧可见数量
+    var TRANSITION_DURATION = 0.6;
+
+    // ===== 模型分配（7 个 poly.pizza 开源动漫角色，CC0，各带 24 个动画）=====
+    // Quaternius Ultimate Modular Men Pack，动画剪辑名统一：CharacterArmature|Idle / Run
+    var POLY = 'https://static.poly.pizza';
+    var MODEL_SOURCES = {
+      'neon-cyber':    { url: POLY + '/e56f23b5-3270-406f-8924-f77cad980c43.glb' }, // Punk
+      'terminal-geek': { url: POLY + '/bcd66ec5-5e81-4901-a222-47abc875fe2a.glb' }, // Hoodie
+      'brutalist':     { url: POLY + '/3a5f3056-ffe6-42eb-bd52-122afcbd22b2.glb' }, // Worker
+      'editorial':     { url: POLY + '/e599abbe-7d73-488c-9d7e-3ead281e705c.glb' }, // Business Man
+      'glassmorphism': { url: POLY + '/ba7a1955-ea51-4cb9-a561-188bdef0a6c7.glb' }, // Woman
+      'retro-future':  { url: POLY + '/0076345b-bbea-42d5-931c-4a5ad2050b18.glb' }, // Astronaut
+      'ink-minimal':   { url: POLY + '/bbe369ee-a686-42c7-adad-14356f5f2f15.glb' }  // Adventurer
+    };
+    var IDLE_CLIP = 'CharacterArmature|Idle';
+    var RUN_CLIP  = 'CharacterArmature|Run';
+
+    // ===== Three.js 场景搭建 =====
+    var renderer = new THREE.WebGLRenderer({ canvas: canvas, antialias: true, alpha: true });
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    renderer.shadowMap.enabled = true;
+    renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+    renderer.outputColorSpace = THREE.SRGBColorSpace;
+
+    var scene = new THREE.Scene();
+
+    var camera = new THREE.PerspectiveCamera(35, window.innerWidth / window.innerHeight, 0.1, 100);
+    camera.position.set(0, 2.0, 10);
+    camera.lookAt(0, 1.2, 0);
+
+    // 灯光：环境光 + 主方向光（投影）+ 主题色点光 + 边缘色点光
+    var ambient = new THREE.AmbientLight(0xffffff, 0.5);
+    scene.add(ambient);
+
+    var dirLight = new THREE.DirectionalLight(0xffffff, 1.4);
+    dirLight.position.set(4, 10, 6);
+    dirLight.castShadow = true;
+    dirLight.shadow.mapSize.set(2048, 2048);
+    dirLight.shadow.camera.near = 0.5;
+    dirLight.shadow.camera.far = 40;
+    dirLight.shadow.camera.left = -12;
+    dirLight.shadow.camera.right = 12;
+    dirLight.shadow.camera.top = 6;
+    dirLight.shadow.camera.bottom = -6;
+    dirLight.shadow.bias = -0.0005;
+    scene.add(dirLight);
+
+    // 主题色灯光（跟随中间角色）
+    var themeLight = new THREE.PointLight(0x00f0ff, 2.5, 18);
+    themeLight.position.set(-2, 2, 3);
+    scene.add(themeLight);
+
+    // 边缘光（背光，增强立体分离感）
+    var rimLight = new THREE.PointLight(0xa855f7, 1.8, 18);
+    rimLight.position.set(2, 3, -2);
+    scene.add(rimLight);
+
+    // 地面（阴影承接）
+    var groundGeo = new THREE.CircleGeometry(20, 64);
+    var groundMat = new THREE.ShadowMaterial({ opacity: 0.4 });
+    var ground = new THREE.Mesh(groundGeo, groundMat);
+    ground.rotation.x = -Math.PI / 2;
+    ground.position.y = 0;
+    ground.receiveShadow = true;
+    scene.add(ground);
+
+    // ===== 工具函数 =====
+    function lerp(a, b, t) { return a + (b - a) * t; }
+    function easeInOutCubic(t) { return t < 0.5 ? 4*t*t*t : 1 - Math.pow(-2*t+2, 3)/2; }
+
+    // ===== 模型实例（7 个角色同台）=====
+    var models = [];
+    var isTransitioning = false;
+    var transitionTime = 0;
+
+    // 舞台位置计算（基于与 current 的索引差）
+    function getStageTransform(index) {
+      var diff = index - current;
+      var absDiff = Math.abs(diff);
+      if (absDiff > STAGE_VISIBLE) return null;
+      return {
+        x: diff * STAGE_SPACING,
+        z: -absDiff * STAGE_DEPTH,
+        scale: absDiff === 0 ? 1.05 : (absDiff === 1 ? 0.68 : 0.50),
+        opacity: absDiff === 0 ? 1.0 : (absDiff === 1 ? 0.45 : 0.25),
+        rotationY: diff === 0 ? 0 : (diff > 0 ? -0.35 : 0.35)
+      };
+    }
+
+    function applyOpacity(m, opacity) {
+      m.meshes.forEach(function(mesh) {
+        var baseOp = mesh.userData.baseOpacity !== undefined ? mesh.userData.baseOpacity : 1;
+        var finalOp = opacity * baseOp;
+        mesh.material.transparent = finalOp < 1;
+        mesh.material.opacity = finalOp;
+      });
+    }
+
+    function applyTransform(m, t) {
+      m.group.position.set(t.x, 0, t.z);
+      m.group.scale.setScalar(t.scale);
+      m.group.rotation.y = t.rotationY;
+      m.currentOpacity = t.opacity;
+      applyOpacity(m, t.opacity);
+    }
+
+    // 重新布局所有角色（instant=true 时瞬切，否则平滑过渡）
+    function layoutStage(instant) {
+      models.forEach(function(m, i) {
+        var transform = getStageTransform(i);
+        if (!transform) {
+          m.group.visible = false;
+          m.targetPos = null;
+          return;
+        }
+        var wasHidden = !m.group.visible;
+        m.group.visible = true;
+        m.targetPos = transform;
+        if (instant) {
+          applyTransform(m, transform);
+          m.startPos = transform;
+        } else if (wasHidden) {
+          // 刚从隐藏恢复：从屏幕外滑入，避免从中央放大重叠
+          var offDir = (i - current) > 0 ? 1 : -1;
+          m.startPos = {
+            x: offDir * 12,
+            z: transform.z,
+            scale: transform.scale * 0.6,
+            opacity: 0,
+            rotationY: transform.rotationY
+          };
+          applyTransform(m, m.startPos);
+        } else {
+          m.startPos = {
+            x: m.group.position.x,
+            z: m.group.position.z,
+            scale: m.group.scale.x,
+            opacity: m.currentOpacity,
+            rotationY: m.group.rotation.y
+          };
+        }
+      });
+      if (!instant) {
+        transitionTime = 0;
+        isTransitioning = true;
+      }
+    }
+
+    // 为指定角色播放动画（使用各模型自带的剪辑名）
+    function playAnimationForModel(index, clipName, loop) {
+      var m = models[index];
+      if (!m || !m.actions[clipName]) return;
+      var next = m.actions[clipName];
+      if (loop === false) {
+        next.setLoop(THREE.LoopOnce, 1);
+        next.clampWhenFinished = true;
+      } else {
+        next.setLoop(THREE.LoopRepeat, Infinity);
+      }
+      next.reset();
+      if (m.currentAction && m.currentAction !== next) {
+        next.crossFadeFrom(m.currentAction, 0.3, false);
+      }
+      next.play();
+      m.currentAction = next;
+    }
+
+    // 显示 HUD + 更新主题灯
+    function showHud(index) {
+      var u = universes[index];
+      hud.querySelector('.hud-name').textContent = u.name;
+      hud.querySelector('.hud-name-en').textContent = u.nameEn;
+      hud.querySelector('.hud-desc').textContent = u.desc;
+      hud.classList.add('visible');
+      document.querySelector('.character-spotlight').style.background =
+        'radial-gradient(ellipse at center top, ' + u.colors[0] + '20 0%, transparent 70%)';
+      themeLight.color.set(u.colors[0]);
+      rimLight.color.set(u.colors[1] || u.colors[0]);
+    }
+
+    // ===== 并行加载 7 个独立模型 =====
+    var loader = new GLTFLoader();
+    var gltfByIndex = {};
+    var loadedCount = 0;
+    var totalToLoad = universes.length;
+
+    universes.forEach(function(u, i) {
+      var src = MODEL_SOURCES[u.id];
+      loader.load(src.url, function(gltf) {
+        gltfByIndex[i] = gltf;
+        loadedCount++;
+        if (loadedCount === totalToLoad) onAllModelsLoaded();
+      }, undefined, function(err) {
+        console.error('GLTF 加载失败:', u.id, err);
+        loadedCount++;
+        if (loadedCount === totalToLoad) onAllModelsLoaded();
+      });
+    });
+
+    function onAllModelsLoaded() {
+      universes.forEach(function(u, i) {
+        var gltf = gltfByIndex[i];
+        if (!gltf) return;
+
+        // 每个模型独立加载，无需 clone
+        var model = gltf.scene;
+        var meshes = [];
+        var isGlass = (u.id === 'glassmorphism');
+        model.traverse(function(node) {
+          if (node.isMesh) {
+            node.castShadow = true;
+            node.receiveShadow = true;
+            node.material = node.material.clone();
+            // 玻璃拟态：半透明
+            if (isGlass) {
+              node.userData.baseOpacity = 0.6;
+              node.material.transparent = true;
+              node.material.opacity = 0.6;
+            } else {
+              node.userData.baseOpacity = 1;
+            }
+            meshes.push(node);
+          }
+        });
+        scene.add(model);
+
+        var mixer = new THREE.AnimationMixer(model);
+        var actions = {};
+        gltf.animations.forEach(function(clip) {
+          actions[clip.name] = mixer.clipAction(clip);
+        });
+
+        // 监听该角色入场动画结束
+        mixer.addEventListener('finished', function(e) {
+          if (i === current && currentState === CharacterState.ENTERING && e.action.getClip().name === RUN_CLIP) {
+            playAnimationForModel(i, IDLE_CLIP, true);
+            currentState = CharacterState.IDLE;
+            isLocked = false;
+            showHud(i);
+          }
+        });
+
+        models.push({
+          group: model,
+          mixer: mixer,
+          actions: actions,
+          meshes: meshes,
+          currentAction: null,
+          currentOpacity: 1,
+          targetPos: null,
+          startPos: null
+        });
+      });
+
+      // 初始舞台布局（瞬切）
+      layoutStage(true);
+
+      // 所有角色播放 Idle
+      models.forEach(function(m, i) {
+        playAnimationForModel(i, IDLE_CLIP, true);
+      });
+
+      // 中间角色播放 Running 入场
+      playAnimationForModel(current, RUN_CLIP, false);
+      currentState = CharacterState.ENTERING;
+
+      modelReady = true;
+      document.getElementById('loader').classList.add('hidden');
+    }
+
+    // ===== 切换（舞台转场）=====
+    function switchTo(index) {
+      if (isLocked || index === current || index < 0 || index >= universes.length) return;
+      if (!modelReady) return;
+      isLocked = true;
+      currentState = CharacterState.ENTERING;
+
+      hud.classList.remove('visible');
+      current = index;
+
+      // 舞台转场：所有角色平滑移动到新位置
+      layoutStage(false);
+
+      // 中间角色播放入场跑步
+      playAnimationForModel(current, RUN_CLIP, false);
+
+      // 更新选择器高亮
+      selectorItems.forEach(function(item, i) {
+        item.classList.toggle('active', i === index);
+      });
+      currentNum.textContent = String(index + 1).padStart(2, '0');
+    }
+
+    // ===== 构建侧边选择器 =====
+    universes.forEach(function(u, i) {
+      var item = document.createElement('div');
+      item.className = 'selector-item';
+      item.dataset.index = i;
+      item.innerHTML = '<span class="selector-num">' + String(i+1).padStart(2,'0') + '</span>' +
+                       '<span class="selector-dot" style="--dot-color:' + u.colors[0] + '"></span>' +
+                       '<span class="selector-name">' + u.name + '</span>';
+      item.addEventListener('click', function() { switchTo(i); });
+      selector.appendChild(item);
+    });
+
+    var selectorItems = selector.querySelectorAll('.selector-item');
+
+    function next() { switchTo(current + 1); }
+    function prev() { switchTo(current - 1); }
+
+    // 进入宇宙（Warp 过渡）
+    function enterUniverse(u) {
+      var warpMap = {
+        'neon-cyber': 'glitch', 'terminal-geek': 'crt', 'brutalist': 'slam',
+        'editorial': 'flip', 'glassmorphism': 'shatter', 'retro-future': 'warp', 'ink-minimal': 'ink'
+      };
+      var warp = document.getElementById('warp');
+      var warpLines = document.getElementById('warpLines');
+      var warpType = warpMap[u.id] || 'warp';
+      warp.setAttribute('data-warp', warpType);
+      warp.style.setProperty('--warp-color', u.colors[0]);
+
+      if (warpType === 'warp') {
+        warpLines.innerHTML = '';
+        for (var i = 0; i < 60; i++) {
+          var line = document.createElement('div');
+          line.className = 'warp-line';
+          line.style.setProperty('--angle', (i / 60 * 360) + 'deg');
+          line.style.animationDelay = (Math.random() * 0.15) + 's';
+          warpLines.appendChild(line);
+        }
+      }
+
+      warp.classList.add('active');
+      setTimeout(function() { window.location.href = u.path; }, 550);
+    }
+
+    // HUD 进入按钮
+    document.querySelector('.hud-enter-btn').addEventListener('click', function() {
+      enterUniverse(universes[current]);
+    });
+
+    // 导航箭头
+    document.querySelector('.nav-prev').addEventListener('click', prev);
+    document.querySelector('.nav-next').addEventListener('click', next);
+
+    // 键盘
+    var keyboardLock = false;
+    document.addEventListener('keydown', function(e) {
+      if (keyboardLock) return;
+      if (e.key === 'ArrowLeft') { keyboardLock = true; setTimeout(function(){keyboardLock=false;}, 200); prev(); }
+      if (e.key === 'ArrowRight') { keyboardLock = true; setTimeout(function(){keyboardLock=false;}, 200); next(); }
+      if (e.key === 'Enter') enterUniverse(universes[current]);
+    });
+
+    // 滚轮
+    var wheelLock = false;
+    stage.addEventListener('wheel', function(e) {
+      e.preventDefault();
+      if (wheelLock) return;
+      wheelLock = true;
+      setTimeout(function() { wheelLock = false; }, 800);
+      if (e.deltaY > 0 || e.deltaX > 0) next(); else prev();
+    }, { passive: false });
+
+    // 触摸/滑动
+    var touchStartX = 0;
+    var touchMoved = false;
+    stage.addEventListener('touchstart', function(e) {
+      touchStartX = e.touches[0].clientX;
+      touchMoved = false;
+    }, { passive: true });
+
+    stage.addEventListener('touchmove', function(e) {
+      var delta = Math.abs(e.touches[0].clientX - touchStartX);
+      if (delta > 30) touchMoved = true;
+    }, { passive: true });
+
+    stage.addEventListener('touchend', function(e) {
+      if (!touchMoved) return;
+      var delta = e.changedTouches[0].clientX - touchStartX;
+      if (delta < -30) next();
+      else if (delta > 30) prev();
+    }, { passive: true });
+
+    // 初始化：高亮第一个选择器
+    selectorItems[0].classList.add('active');
+
+    // 兜底：3 秒后强制隐藏 loader（防止模型加载卡住）
+    setTimeout(function() {
+      document.getElementById('loader').classList.add('hidden');
+    }, 3000);
+
+    // 初始化 GitHub API
+    if (window.GitHubAPI) {
+      window.GitHubAPI.init().catch(function () {});
+    }
+
+    // ===== 渲染循环 =====
+    var clock = new THREE.Clock();
+    function animate() {
+      requestAnimationFrame(animate);
+      var delta = clock.getDelta();
+
+      // 更新所有角色的动画
+      models.forEach(function(m) {
+        m.mixer.update(delta);
+      });
+
+      // 舞台转场过渡（位置/缩放/透明度/朝向）
+      if (isTransitioning) {
+        transitionTime += delta;
+        var t = Math.min(transitionTime / TRANSITION_DURATION, 1);
+        var eased = easeInOutCubic(t);
+        models.forEach(function(m) {
+          if (m.targetPos && m.startPos) {
+            m.group.position.x = lerp(m.startPos.x, m.targetPos.x, eased);
+            m.group.position.z = lerp(m.startPos.z, m.targetPos.z, eased);
+            m.group.scale.setScalar(lerp(m.startPos.scale, m.targetPos.scale, eased));
+            m.group.rotation.y = lerp(m.startPos.rotationY, m.targetPos.rotationY, eased);
+            m.currentOpacity = lerp(m.startPos.opacity, m.targetPos.opacity, eased);
+            applyOpacity(m, m.currentOpacity);
+          }
+        });
+        if (t >= 1) isTransitioning = false;
+      }
+
+      // 主题灯光呼吸
+      var time = clock.elapsedTime;
+      themeLight.intensity = 2.2 + Math.sin(time * 1.5) * 0.3;
+      rimLight.intensity = 1.5 + Math.cos(time * 1.2) * 0.2;
+
+      renderer.render(scene, camera);
+    }
+    animate();
+
+    // 窗口尺寸适配
+    window.addEventListener('resize', function() {
+      camera.aspect = window.innerWidth / window.innerHeight;
+      camera.updateProjectionMatrix();
+      renderer.setSize(window.innerWidth, window.innerHeight);
+    });
+  </script>
 </body>
 </html>
