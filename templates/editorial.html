@@ -864,18 +864,23 @@
     }
   </style>
   <link rel="stylesheet" href="../assets/shared.css" />
+  <script src="../i18n/locales/en.js"></script>
+  <script src="../i18n/locales/zh-CN.js"></script>
+  <script src="../i18n/locales/zh-TW.js"></script>
+  <script src="../i18n/i18n.js"></script>
+  <script src="../i18n/lang-switcher.js"></script>
 </head>
 <body>
-  <a href="../index.html" class="gh-back-hub" aria-label="返回多元宇宙">
+  <a href="../index.html" class="gh-back-hub" aria-label="Back to Multiverse" data-i18n-attr="aria-label:nav.back">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
-    MULTIVERSE
+    <span data-i18n="hub.title">MULTIVERSE</span>
   </a>
 
   <!-- ============== DATELINE STRIP ============== -->
   <div class="dateline-strip">
     <div class="inner">
       <span>EST. 2026 · VOL. I · ISSUE 01</span>
-      <span class="live">Available for hire · Earth</span>
+      <span class="live"><span data-i18n="status.available">Available for hire</span> · Earth</span>
     </div>
   </div>
 
@@ -884,10 +889,10 @@
     <div class="masthead-inner">
       <a href="#home" class="logo">JESSE ZEN</a>
       <nav class="nav">
-        <a href="#home">Home</a>
-        <a href="#projects">Projects</a>
-        <a href="#blog">Blog</a>
-        <a href="#about">About</a>
+        <a href="#home" data-i18n="nav.home">Home</a>
+        <a href="#projects" data-i18n="nav.projects">Projects</a>
+        <a href="#blog" data-i18n="nav.blog">Blog</a>
+        <a href="#about" data-i18n="nav.about">About</a>
       </nav>
       <span class="issue-info">Nº 01 · 2026</span>
       <button class="menu-btn" aria-label="Toggle menu" aria-expanded="false">
@@ -896,10 +901,10 @@
     </div>
   </header>
   <nav class="mobile-nav">
-    <a href="#home">Home</a>
-    <a href="#projects">Projects</a>
-    <a href="#blog">Blog</a>
-    <a href="#about">About</a>
+    <a href="#home" data-i18n="nav.home">Home</a>
+    <a href="#projects" data-i18n="nav.projects">Projects</a>
+    <a href="#blog" data-i18n="nav.blog">Blog</a>
+    <a href="#about" data-i18n="nav.about">About</a>
   </nav>
 
   <main>
@@ -922,9 +927,9 @@
         <p class="hero-sub reveal">Java Backend Developer — building distributed systems &amp; production-grade APIs.</p>
 
         <div class="hero-meta reveal">
-          <span class="status-badge">Available for hire</span>
+          <span class="status-badge" data-i18n="status.available">Available for hire</span>
           <span class="sep"></span>
-          <span>Earth</span>
+          <span data-i18n="person.location">Earth</span>
           <span class="sep"></span>
           <span>Backend Architecture</span>
           <span class="sep"></span>
@@ -932,7 +937,7 @@
         </div>
 
         <blockquote class="pullquote reveal">
-          <span class="mark">&ldquo;</span>Ship beats perfect &mdash; learn by building.<span class="mark">&rdquo;</span>
+          <span class="mark">&ldquo;</span><span data-i18n="person.quote">Ship beats perfect &mdash; learn by building.</span><span class="mark">&rdquo;</span>
           <cite>— A working philosophy</cite>
         </blockquote>
       </div>
@@ -943,22 +948,22 @@
       <div class="wrap">
         <div class="section-head reveal">
           <span class="section-num">Nº 02</span>
-          <span class="section-title">By the Numbers</span>
+          <span class="section-title" data-i18n="section.byTheNumbers">By the Numbers</span>
           <span class="section-rule"></span>
           <span class="section-kicker">A record, in figures</span>
         </div>
         <div class="stats-grid reveal">
           <div class="stat">
             <div class="stat-num" data-github="stat:contributions">1,247</div>
-            <div class="stat-label">Contributions</div>
+            <div class="stat-label" data-i18n="stats.contributions">Contributions</div>
           </div>
           <div class="stat">
             <div class="stat-num" data-github="stat:streak">42</div>
-            <div class="stat-label">Day Streak</div>
+            <div class="stat-label" data-i18n="stats.streak">Day Streak</div>
           </div>
           <div class="stat">
             <div class="stat-num" data-github="stat:stars">312</div>
-            <div class="stat-label">Stars Earned</div>
+            <div class="stat-label" data-i18n="stats.starsEarned">Stars Earned</div>
           </div>
           <div class="stat">
             <div class="stat-num" data-github="stat:repos">38</div>
@@ -1061,7 +1066,7 @@
       <div class="wrap">
         <div class="section-head reveal">
           <span class="section-num">Nº 06</span>
-          <span class="section-title">Dispatches</span>
+          <span class="section-title" data-i18n="section.dispatches">Dispatches</span>
           <span class="section-rule"></span>
           <span class="section-kicker">Recent activity</span>
         </div>
@@ -1213,7 +1218,9 @@
   <script src="../config.js"></script>
   <script src="../github-api.js"></script>
   <script>
+    if (window.I18n) I18n.init();
     document.addEventListener('DOMContentLoaded', function() {
+      if (window.LangSwitcher) LangSwitcher.mount();
       if (window.GitHubAPI) GitHubAPI.init();
     });
   </script>

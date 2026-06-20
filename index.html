@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="zh-CN">
+<html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -8,6 +8,11 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;600&family=Orbitron:wght@600;800;900&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="./assets/shared.css" />
+  <script src="./i18n/locales/en.js"></script>
+  <script src="./i18n/locales/zh-CN.js"></script>
+  <script src="./i18n/locales/zh-TW.js"></script>
+  <script src="./i18n/i18n.js"></script>
+  <script src="./i18n/lang-switcher.js"></script>
   <script type="importmap">
   {
     "imports": {
@@ -704,7 +709,7 @@
   <!-- 加载动画 -->
   <div class="loader" id="loader">
     <div class="loader-ring"></div>
-    <div class="loader-text">Initializing Multiverse...</div>
+    <div class="loader-text" data-i18n="hub.loader">Initializing Multiverse...</div>
   </div>
 
   <!-- 独立兜底：不依赖 Three.js 模块，3秒后强制隐藏 loader -->
@@ -737,14 +742,14 @@
     </div>
     <div class="status">
       <span class="status-dot"></span>
-      <span>Available for hire</span>
+      <span data-i18n="status.available">Available for hire</span>
     </div>
   </div>
 
   <!-- 中央标题（顶部居中） -->
   <div class="hero-text">
-    <h1>MULTIVERSE</h1>
-    <p class="tagline">Seven Parallel Universes</p>
+    <h1 data-i18n="hub.title">MULTIVERSE</h1>
+    <p class="tagline" data-i18n="hub.tagline">Seven Parallel Universes</p>
     <p class="name" id="heroName">Jesse Zen · Java Backend Developer</p>
   </div>
 
@@ -765,7 +770,7 @@
     <div class="hud-name"></div>
     <div class="hud-name-en"></div>
     <div class="hud-desc"></div>
-    <div class="hud-enter-btn">进入宇宙 →</div>
+    <div class="hud-enter-btn" data-i18n="hub.enter">Enter Universe →</div>
   </div>
 
   <!-- 导航箭头 -->
@@ -779,6 +784,19 @@
 
   <script src="./config.js"></script>
   <script src="./github-api.js"></script>
+  <script>
+    // Initialize i18n before module scripts run
+    if (window.I18n) {
+      I18n.init();
+    }
+    if (window.LangSwitcher) {
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', function () { LangSwitcher.mount(); });
+      } else {
+        LangSwitcher.mount();
+      }
+    }
+  </script>
   <script type="module">
     import * as THREE from 'three';
     import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
@@ -786,7 +804,13 @@
     var universes = window.SITE_CONFIG.universes;
     var heroName = document.getElementById('heroName');
 
-    heroName.textContent = window.SITE_CONFIG.name + " · " + window.SITE_CONFIG.role;
+    function updateHeroName() {
+      var role = (window.I18n && I18n.t) ? I18n.t('person.role') : (window.SITE_CONFIG.role || '');
+      heroName.textContent = window.SITE_CONFIG.name + " · " + role;
+    }
+    updateHeroName();
+    // re-render hero name when language changes
+    window.addEventListener('languagechange', updateHeroName);
     document.querySelector('.total-num').textContent = String(universes.length).padStart(2, '0');
 
     // ===== 状态机 =====
@@ -977,9 +1001,14 @@
     // 显示 HUD + 更新主题灯
     function showHud(index) {
       var u = universes[index];
-      hud.querySelector('.hud-name').textContent = u.name;
+      var localName = (window.I18n && I18n.t) ? I18n.t('universes.' + u.id + '.name') : u.nameEn;
+      var localDesc = (window.I18n && I18n.t) ? I18n.t('universes.' + u.id + '.desc') : u.desc;
+      // If i18n key not found, fall back to existing name/nameEn
+      if (!localName || localName === 'universes.' + u.id + '.name') localName = u.nameEn || u.name;
+      if (!localDesc || localDesc === 'universes.' + u.id + '.desc') localDesc = u.desc;
+      hud.querySelector('.hud-name').textContent = localName;
       hud.querySelector('.hud-name-en').textContent = u.nameEn;
-      hud.querySelector('.hud-desc').textContent = u.desc;
+      hud.querySelector('.hud-desc').textContent = localDesc;
       hud.classList.add('visible');
       document.querySelector('.character-spotlight').style.background =
         'radial-gradient(ellipse at center top, ' + u.colors[0] + '20 0%, transparent 70%)';
@@ -1101,15 +1130,33 @@
     }
 
     // ===== 构建侧边选择器 =====
+    function getLocalUniverseName(u) {
+      if (!window.I18n || !I18n.t) return u.nameEn || u.name;
+      var key = 'universes.' + u.id + '.name';
+      var val = I18n.t(key);
+      return (val === key) ? (u.nameEn || u.name) : val;
+    }
     universes.forEach(function(u, i) {
       var item = document.createElement('div');
       item.className = 'selector-item';
       item.dataset.index = i;
+      item.dataset.universeId = u.id;
       item.innerHTML = '<span class="selector-num">' + String(i+1).padStart(2,'0') + '</span>' +
                        '<span class="selector-dot" style="--dot-color:' + u.colors[0] + '"></span>' +
-                       '<span class="selector-name">' + u.name + '</span>';
+                       '<span class="selector-name">' + getLocalUniverseName(u) + '</span>';
       item.addEventListener('click', function() { switchTo(i); });
       selector.appendChild(item);
+    });
+
+    // Update selector names when language changes
+    window.addEventListener('languagechange', function () {
+      selector.querySelectorAll('.selector-item').forEach(function (item) {
+        var uid = item.dataset.universeId;
+        var u = universes.find(function (x) { return x.id === uid; });
+        if (!u) return;
+        var nameEl = item.querySelector('.selector-name');
+        if (nameEl) nameEl.textContent = getLocalUniverseName(u);
+      });
     });
 
     var selectorItems = selector.querySelectorAll('.selector-item');

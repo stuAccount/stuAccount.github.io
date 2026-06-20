@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="zh-CN">
+<html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -772,11 +772,16 @@
     }
   </style>
   <link rel="stylesheet" href="../assets/shared.css" />
+  <script src="../i18n/locales/en.js"></script>
+  <script src="../i18n/locales/zh-CN.js"></script>
+  <script src="../i18n/locales/zh-TW.js"></script>
+  <script src="../i18n/i18n.js"></script>
+  <script src="../i18n/lang-switcher.js"></script>
 </head>
 <body>
-  <a href="../index.html" class="gh-back-hub" aria-label="返回多元宇宙">
+  <a href="../index.html" class="gh-back-hub" data-i18n-attr="aria-label:nav.back" aria-label="Back to Multiverse">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
-    MULTIVERSE
+    <span data-i18n="hub.title">MULTIVERSE</span>
   </a>
   <!-- Animated gradient background -->
   <div class="bg-gradient" aria-hidden="true"></div>
@@ -797,11 +802,11 @@
     <div class="nav-inner">
       <a href="#top" class="nav-logo" aria-label="Jesse Zen home">JZ</a>
       <ul class="nav-links">
-        <li><a href="#stats">Stats</a></li>
-        <li><a href="#stack">Stack</a></li>
-        <li><a href="#projects">Projects</a></li>
-        <li><a href="#blog">Blog</a></li>
-        <li><a href="#activity">Activity</a></li>
+        <li><a href="#stats" data-i18n="nav.stats">Stats</a></li>
+        <li><a href="#stack" data-i18n="nav.stack">Stack</a></li>
+        <li><a href="#projects" data-i18n="nav.projects">Projects</a></li>
+        <li><a href="#blog" data-i18n="nav.blog">Blog</a></li>
+        <li><a href="#activity" data-i18n="nav.activity">Activity</a></li>
       </ul>
       <div class="nav-social">
         <a href="https://github.com" target="_blank" rel="noopener" aria-label="GitHub">
@@ -827,16 +832,16 @@
       <div class="hero-inner">
         <div class="status-badge glass reveal">
           <span class="status-dot"></span>
-          Available for hire
+          <span data-i18n="status.available">Available for hire</span>
         </div>
         <h1 class="gradient-text reveal">Jesse Zen</h1>
         <p class="hero-role reveal">
-          <span class="accent">Java Backend Developer</span> · crafting resilient systems at scale
+          <span class="accent" data-i18n="person.role">Java Backend Developer</span> · crafting resilient systems at scale
         </p>
         <div class="hero-pills reveal">
           <span class="pill">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg>
-            Earth
+            <span data-i18n="person.location">Earth</span>
           </span>
           <span class="pill">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M12 1v6m0 10v6m11-11h-6M7 12H1m17.07-7.07-4.24 4.24M9.17 14.83l-4.24 4.24m0-14.14 4.24 4.24m5.66 5.66 4.24 4.24"/></svg>
@@ -849,7 +854,7 @@
         </div>
         <div class="quote-card glass reveal">
           <span class="qmark">“</span>
-          <p>Ship beats perfect — learn by building.</p>
+          <p data-i18n="person.quote">Ship beats perfect — learn by building.</p>
           <span class="author">— Jesse Zen</span>
         </div>
       </div>
@@ -870,28 +875,28 @@
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"/><path d="m19 9-5 5-4-4-3 3"/></svg>
           </div>
           <div class="stat-value" data-count="1247" data-github="stat:contributions">0</div>
-          <div class="stat-label">Contributions</div>
+          <div class="stat-label" data-i18n="stats.contributions">Contributions</div>
         </div>
         <div class="stat-card glass glass-hover reveal">
           <div class="stat-icon">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5Z"/></svg>
           </div>
           <div class="stat-value" data-count="42" data-github="stat:streak">0</div>
-          <div class="stat-label">Day Streak</div>
+          <div class="stat-label" data-i18n="stats.streak">Day Streak</div>
         </div>
         <div class="stat-card glass glass-hover reveal">
           <div class="stat-icon">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m12 2 3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2Z"/></svg>
           </div>
           <div class="stat-value" data-count="312" data-github="stat:stars">0</div>
-          <div class="stat-label">Stars</div>
+          <div class="stat-label" data-i18n="stats.stars">Stars</div>
         </div>
         <div class="stat-card glass glass-hover reveal">
           <div class="stat-icon">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M2 22a8 8 0 0 1 16 0Z"/><circle cx="10" cy="8" r="4"/><path d="M16 4a4 4 0 0 1 0 8"/><path d="M20 22a6 6 0 0 0-4-5.66"/></svg>
           </div>
           <div class="stat-value" data-count="38" data-github="stat:repos">0</div>
-          <div class="stat-label">Repositories</div>
+          <div class="stat-label" data-i18n="stats.repositories">Repositories</div>
         </div>
       </div>
     </section>
@@ -927,7 +932,7 @@
     <section id="projects">
       <div class="section-head reveal">
         <span class="section-eyebrow">Open source</span>
-        <h2 class="section-title gradient-text">Featured projects</h2>
+        <h2 class="section-title gradient-text" data-i18n="section.featuredProjects">Featured projects</h2>
         <p class="section-sub">A selection of repositories I maintain — from API gateways to distributed schedulers.</p>
       </div>
       <div class="projects-grid" data-github="repos:list">
@@ -951,7 +956,7 @@
     <section id="blog">
       <div class="section-head reveal">
         <span class="section-eyebrow">Writing</span>
-        <h2 class="section-title gradient-text">Latest posts</h2>
+        <h2 class="section-title gradient-text" data-i18n="section.latestPostsShort">Latest posts</h2>
         <p class="section-sub">Notes on Spring, Redis, distributed systems, and the JVM.</p>
       </div>
       <div class="blog-grid" data-github="blog:list">
@@ -972,7 +977,7 @@
     <section id="activity">
       <div class="section-head reveal">
         <span class="section-eyebrow">Live feed</span>
-        <h2 class="section-title gradient-text">Activity timeline</h2>
+        <h2 class="section-title gradient-text" data-i18n="section.activityTimeline">Activity timeline</h2>
         <p class="section-sub">Recent commits, merges, and releases across my repositories.</p>
       </div>
       <div class="timeline-card glass reveal">
@@ -992,7 +997,7 @@
     <section id="interests">
       <div class="section-head reveal">
         <span class="section-eyebrow">Beyond code</span>
-        <h2 class="section-title gradient-text">Interests</h2>
+        <h2 class="section-title gradient-text" data-i18n="section.interests">Interests</h2>
         <p class="section-sub">The domains and habits that shape how I think about systems.</p>
       </div>
       <div class="interests-grid">
@@ -1134,7 +1139,9 @@
   <script src="../config.js"></script>
   <script src="../github-api.js"></script>
   <script>
+    if (window.I18n) I18n.init();
     document.addEventListener('DOMContentLoaded', function() {
+      if (window.LangSwitcher) LangSwitcher.mount();
       if (window.GitHubAPI) GitHubAPI.init();
     });
   </script>

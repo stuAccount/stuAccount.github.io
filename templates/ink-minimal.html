@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="zh-CN">
+<html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -821,11 +821,16 @@
     }
   </style>
 <link rel="stylesheet" href="../assets/shared.css" />
+<script src="../i18n/locales/en.js"></script>
+<script src="../i18n/locales/zh-CN.js"></script>
+<script src="../i18n/locales/zh-TW.js"></script>
+<script src="../i18n/i18n.js"></script>
+<script src="../i18n/lang-switcher.js"></script>
 </head>
 <body>
-<a href="../index.html" class="gh-back-hub" aria-label="返回多元宇宙">
+<a href="../index.html" class="gh-back-hub" data-i18n-attr="aria-label:nav.back" aria-label="Back to Multiverse">
   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
-  MULTIVERSE
+  <span data-i18n="hub.title">MULTIVERSE</span>
 </a>
 
   <!-- ============ NAV · 顶栏 ============ -->
@@ -836,10 +841,10 @@
         <span class="brand-name">Jesse Zen</span>
       </a>
       <nav class="nav" aria-label="primary">
-        <a href="#stack">Stack</a>
-        <a href="#projects">Projects</a>
-        <a href="#blog">Blog</a>
-        <a href="#activity">墨迹</a>
+        <a href="#stack" data-i18n="nav.stack">Stack</a>
+        <a href="#projects" data-i18n="nav.projects">Projects</a>
+        <a href="#blog" data-i18n="nav.blog">Blog</a>
+        <a href="#activity" data-i18n="nav.activity">墨迹</a>
       </nav>
       <button class="menu-btn" type="button" aria-label="menu" aria-expanded="false">
         <span></span>
@@ -862,13 +867,13 @@
         <div class="hero-grid">
           <div class="hero-main">
             <h1 class="hero-name reveal">Jesse Zen</h1>
-            <p class="hero-role reveal">后端工程师 <span class="en">· Java Backend Developer</span></p>
+            <p class="hero-role reveal"><span data-i18n="person.role">后端工程师</span> <span class="en">· Java Backend Developer</span></p>
             <div class="hero-meta reveal">
-              <span class="status-badge">可邀约 · Available for hire</span>
+              <span class="status-badge" data-i18n="status.available">可邀约 · Available for hire</span>
               <span>Earth <span class="dot"></span> 天地之间</span>
             </div>
             <blockquote class="hero-quote reveal">
-              <p class="q-en">&ldquo;Ship beats perfect &mdash; learn by building.&rdquo;</p>
+              <p class="q-en">&ldquo;<span data-i18n="person.quote">Ship beats perfect &mdash; learn by building.</span>&rdquo;</p>
               <span class="q-cn">行胜于言，筑以致远</span>
             </blockquote>
           </div>
@@ -917,7 +922,7 @@
           <span class="section-vert">兵器</span>
           <div class="section-titles">
             <p class="section-kicker">Arsenal</p>
-            <h2 class="section-title">技术栈 <span class="en">/ Tools of the trade</span></h2>
+            <h2 class="section-title"><span data-i18n="section.techStack">技术栈</span> <span class="en">/ Tools of the trade</span></h2>
           </div>
         </header>
         <div class="tags reveal">
@@ -942,7 +947,7 @@
           <span class="section-vert">作品</span>
           <div class="section-titles">
             <p class="section-kicker">Selected Work</p>
-            <h2 class="section-title">项目 <span class="en">/ Crafted with care</span></h2>
+            <h2 class="section-title"><span data-i18n="section.projects">项目</span> <span class="en">/ Crafted with care</span></h2>
           </div>
         </header>
         <div class="projects reveal" data-github="repos:list">
@@ -976,7 +981,7 @@
           <span class="section-vert">文章</span>
           <div class="section-titles">
             <p class="section-kicker">Writing</p>
-            <h2 class="section-title">随笔 <span class="en">/ Notes &amp; essays</span></h2>
+            <h2 class="section-title"><span data-i18n="section.blog">随笔</span> <span class="en">/ Notes &amp; essays</span></h2>
           </div>
         </header>
         <div class="posts" data-github="blog:list">
@@ -1002,7 +1007,7 @@
           <span class="section-vert">墨迹</span>
           <div class="section-titles">
             <p class="section-kicker">Recent Activity</p>
-            <h2 class="section-title">近迹 <span class="en">/ Ink traces of late</span></h2>
+            <h2 class="section-title"><span data-i18n="section.inkTraces">近迹</span> <span class="en">/ Ink traces of late</span></h2>
           </div>
         </header>
         <div class="timeline reveal" data-github="activity:list">
@@ -1025,7 +1030,7 @@
           <span class="section-vert">雅好</span>
           <div class="section-titles">
             <p class="section-kicker">Beyond Code</p>
-            <h2 class="section-title">志趣 <span class="en">/ Things I dwell on</span></h2>
+            <h2 class="section-title"><span data-i18n="section.interests">志趣</span> <span class="en">/ Things I dwell on</span></h2>
           </div>
         </header>
         <div class="interests reveal">
@@ -1143,7 +1148,9 @@
 <script src="../config.js"></script>
 <script src="../github-api.js"></script>
 <script>
+  if (window.I18n) I18n.init();
   document.addEventListener('DOMContentLoaded', function() {
+    if (window.LangSwitcher) LangSwitcher.mount();
     if (window.GitHubAPI) GitHubAPI.init();
   });
 </script>

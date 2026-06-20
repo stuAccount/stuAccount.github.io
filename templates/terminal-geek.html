@@ -191,11 +191,16 @@
     }
   </style>
   <link rel="stylesheet" href="../assets/shared.css" />
+  <script src="../i18n/locales/en.js"></script>
+  <script src="../i18n/locales/zh-CN.js"></script>
+  <script src="../i18n/locales/zh-TW.js"></script>
+  <script src="../i18n/i18n.js"></script>
+  <script src="../i18n/lang-switcher.js"></script>
 </head>
 <body>
-  <a href="../index.html" class="gh-back-hub" aria-label="返回多元宇宙">
+  <a href="../index.html" class="gh-back-hub" data-i18n-attr="aria-label:nav.back" aria-label="Back to Multiverse">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
-    MULTIVERSE
+    <span data-i18n="hub.title">MULTIVERSE</span>
   </a>
   <div class="scanlines" aria-hidden="true"></div>
   <div class="vignette" aria-hidden="true"></div>
@@ -210,21 +215,21 @@
             <span class="dot green"></span>
           </div>
           <div class="title"><b>jesse@zen</b>: ~/portfolio</div>
-          <div class="status"><span class="on">●</span> ONLINE</div>
+          <div class="status"><span class="on">●</span> <span data-i18n="status.online">ONLINE</span></div>
         </div>
         <nav class="nav" aria-label="Primary">
-          <a href="#home">[ HOME ]</a>
-          <a href="#projects">[ PROJECTS ]</a>
-          <a href="#blog">[ BLOG ]</a>
-          <a href="#about">[ ABOUT ]</a>
-          <a href="#contact">[ CONTACT ]</a>
+          <a href="#home">[ <span data-i18n="nav.home">HOME</span> ]</a>
+          <a href="#projects">[ <span data-i18n="nav.projects">PROJECTS</span> ]</a>
+          <a href="#blog">[ <span data-i18n="nav.blog">BLOG</span> ]</a>
+          <a href="#about">[ <span data-i18n="nav.about">ABOUT</span> ]</a>
+          <a href="#contact">[ <span data-i18n="nav.contact">CONTACT</span> ]</a>
         </nav>
       </header>
 
       <main class="body">
 
         <section class="sec" id="home">
-          <div class="sec-title"><span class="br">┌──</span><span class="num">01</span> · HOME<span class="br">──</span></div>
+          <div class="sec-title"><span class="br">┌──</span><span class="num">01</span> · <span data-i18n="section.home">HOME</span><span class="br">──</span></div>
           <div id="hero" aria-live="polite">
             <noscript>
               <div class="line"><span class="prompt"><span class="user">jesse@zen</span><span class="sep">:</span><span class="path">~</span><span class="sep">$</span> </span>whoami</div>
@@ -239,24 +244,24 @@
         </section>
 
         <section class="sec" id="stats">
-          <div class="sec-title"><span class="br">┌──</span><span class="num">02</span> · SYSTEM_STATS<span class="br">──</span></div>
+          <div class="sec-title"><span class="br">┌──</span><span class="num">02</span> · <span data-i18n="section.systemStats">SYSTEM_STATS</span><span class="br">──</span></div>
           <div class="cmdline"><span class="prompt"><span class="user">jesse@zen</span><span class="sep">:</span><span class="path">~</span><span class="sep">$</span></span> system stats --user jesse</div>
           <table class="stats" aria-label="System statistics">
             <thead>
-              <tr><th>METRIC</th><th>VALUE</th></tr>
+              <tr><th data-i18n="stats.metric">METRIC</th><th data-i18n="stats.value">VALUE</th></tr>
             </thead>
             <tbody>
-              <tr><td class="metric">CONTRIBUTIONS</td><td class="val" data-github="stat:contributions">1,247</td></tr>
-              <tr><td class="metric">CURRENT_STREAK</td><td class="val" data-github="stat:streak">42 days</td></tr>
-              <tr><td class="metric">STARS_EARNED</td><td class="val" data-github="stat:stars">312</td></tr>
-              <tr><td class="metric">REPOSITORIES</td><td class="val" data-github="stat:repos">38</td></tr>
+              <tr><td class="metric" data-i18n="stats.contributionsUpper">CONTRIBUTIONS</td><td class="val" data-github="stat:contributions">1,247</td></tr>
+              <tr><td class="metric" data-i18n="stats.currentStreakUpper">CURRENT_STREAK</td><td class="val" data-github="stat:streak">42 days</td></tr>
+              <tr><td class="metric" data-i18n="stats.starsEarnedUpper">STARS_EARNED</td><td class="val" data-github="stat:stars">312</td></tr>
+              <tr><td class="metric" data-i18n="stats.repositoriesUpper">REPOSITORIES</td><td class="val" data-github="stat:repos">38</td></tr>
             </tbody>
           </table>
           <div class="note"># last sync: 2024-03-15 09:12 UTC · source: github.com/stuAccount</div>
         </section>
 
         <section class="sec" id="stack">
-          <div class="sec-title"><span class="br">┌──</span><span class="num">03</span> · TECH_STACK<span class="br">──</span></div>
+          <div class="sec-title"><span class="br">┌──</span><span class="num">03</span> · <span data-i18n="section.techStack">TECH_STACK</span><span class="br">──</span></div>
           <div class="cmdline"><span class="prompt"><span class="user">jesse@zen</span><span class="sep">:</span><span class="path">~</span><span class="sep">$</span></span> ls -la ~/skills/</div>
 <pre class="ls"><span class="total">total 10</span>
 <span class="perm">drwxr-xr-x</span>  <span class="own">jesse staff</span>  <span class="size">4.0K</span>  <span class="date">Mar 14 09:12</span>  <span class="dir">Java/</span>
@@ -272,7 +277,7 @@
         </section>
 
         <section class="sec" id="projects">
-          <div class="sec-title"><span class="br">┌──</span><span class="num">04</span> · PROJECTS<span class="br">──</span></div>
+          <div class="sec-title"><span class="br">┌──</span><span class="num">04</span> · <span data-i18n="section.projects">PROJECTS</span><span class="br">──</span></div>
           <div class="cmdline"><span class="prompt"><span class="user">jesse@zen</span><span class="sep">:</span><span class="path">~</span><span class="sep">$</span></span> cat projects.json</div>
 <pre class="json" data-github="repos:list" data-fill-mode="json"><span class="punc">[</span>
   <span class="json-obj" data-repo-template><span class="punc">{</span>
@@ -287,22 +292,22 @@
         </section>
 
         <section class="sec" id="blog">
-          <div class="sec-title"><span class="br">┌──</span><span class="num">05</span> · BLOG<span class="br">──</span></div>
+          <div class="sec-title"><span class="br">┌──</span><span class="num">05</span> · <span data-i18n="section.blog">BLOG</span><span class="br">──</span></div>
           <div class="cmdline"><span class="prompt"><span class="user">jesse@zen</span><span class="sep">:</span><span class="path">~</span><span class="sep">$</span></span> cat blog_index.md</div>
           <div class="posts" data-github="blog:list">
             <a class="post" href="#" data-blog-template data-field="url">
               <h3 data-field="title">深入理解 Spring Boot 3 的自动配置机制</h3>
               <div class="meta">
-                <span><span class="k">date:</span> <span class="v" data-field="date">2024-03-15</span></span>
-                <span><span class="k">read:</span> <span class="v" data-field="readtime">8 min</span></span>
-                <span><span class="k">category:</span> <span class="cat" data-field="category">Spring Boot</span></span>
+                <span><span class="k" data-i18n="blog.dateLabel">date:</span> <span class="v" data-field="date">2024-03-15</span></span>
+                <span><span class="k" data-i18n="blog.readLabel">read:</span> <span class="v" data-field="readtime">8 min</span></span>
+                <span><span class="k" data-i18n="blog.categoryLabel">category:</span> <span class="cat" data-field="category">Spring Boot</span></span>
               </div>
             </a>
           </div>
         </section>
 
         <section class="sec" id="activity">
-          <div class="sec-title"><span class="br">┌──</span><span class="num">06</span> · ACTIVITY_LOG<span class="br">──</span></div>
+          <div class="sec-title"><span class="br">┌──</span><span class="num">06</span> · <span data-i18n="section.activity">ACTIVITY_LOG</span><span class="br">──</span></div>
           <div class="cmdline"><span class="prompt"><span class="user">jesse@zen</span><span class="sep">:</span><span class="path">~</span><span class="sep">$</span></span> git log --oneline --all</div>
           <div class="log" data-github="activity:list">
             <div class="row" data-activity-template>
@@ -317,7 +322,7 @@
         </section>
 
         <section class="sec" id="about">
-          <div class="sec-title"><span class="br">┌──</span><span class="num">07</span> · ABOUT<span class="br">──</span></div>
+          <div class="sec-title"><span class="br">┌──</span><span class="num">07</span> · <span data-i18n="section.about">ABOUT</span><span class="br">──</span></div>
           <div class="cmdline"><span class="prompt"><span class="user">jesse@zen</span><span class="sep">:</span><span class="path">~</span><span class="sep">$</span></span> neofetch</div>
           <div class="neofetch">
 <pre class="ascii">       .--.
@@ -451,7 +456,10 @@
   <script src="../config.js"></script>
   <script src="../github-api.js"></script>
   <script>
+    // Initialize i18n
+    if (window.I18n) I18n.init();
     document.addEventListener('DOMContentLoaded', function() {
+      if (window.LangSwitcher) LangSwitcher.mount();
       if (window.GitHubAPI) GitHubAPI.init();
     });
   </script>

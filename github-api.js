@@ -94,8 +94,31 @@ const GitHubAPI = (function () {
     };
   }
 
+  // Localize a fallback item's field via its plural sibling (action→actions, desc→descs)
+  function localizedFallbackField(item, field) {
+    var lang = (window.I18n && I18n.getLang) ? I18n.getLang() : 'en';
+    var pluralKey = field + 's'; // action→actions, desc→descs
+    if (item[pluralKey]) {
+      var localized = item[pluralKey][lang] || item[pluralKey]['en'];
+      if (localized !== undefined) return localized;
+    }
+    return item[field]; // legacy fallback
+  }
+
   function parseActivity(events) {
-    if (!events || !events.length) return FALLBACK.activity || [];
+    if (!events || !events.length) {
+      // Localize fallback activity data
+      return (FALLBACK.activity || []).map(function (item) {
+        return {
+          type: item.type,
+          action: localizedFallbackField(item, 'action'),
+          desc: localizedFallbackField(item, 'desc'),
+          time: item.time || '',
+          repo: item.repo || '',
+          color: '#64748b',
+        };
+      });
+    }
 
     const colorMap = {
       PushEvent: "#00f0ff",
@@ -106,33 +129,60 @@ const GitHubAPI = (function () {
       ForkEvent: "#06b6d4",
     };
 
+    // i18n helper (falls back to English if I18n not loaded)
+    function tr(key, params) {
+      return (window.I18n && I18n.t) ? I18n.t(key, params) : fallbackTr(key, params);
+    }
+    function fallbackTr(key, params) {
+      var dict = {
+        'github.activity.pushed': 'Pushed to ${repo}',
+        'github.activity.prMerged': 'PR merged in ${repo}',
+        'github.activity.prOpened': 'PR opened in ${repo}',
+        'github.activity.released': 'Released in ${repo}',
+        'github.activity.issueAction': '${action} issue in ${repo}',
+        'github.activity.created': 'Created ${ref_type} in ${repo}',
+        'github.activity.default': '${type} in ${repo}',
+        'github.activity.codeUpdate': 'code update',
+        'github.activity.newRelease': 'new release'
+      };
+      var val = dict[key] || key;
+      if (params) {
+        Object.keys(params).forEach(function (k) {
+          val = val.replace('${' + k + '}', params[k]);
+        });
+      }
+      return val;
+    }
+
     return events.slice(0, 6).map((e) => {
       const repo = e.repo ? e.repo.name.split("/").pop() : "";
       let action = "";
       let desc = "";
       switch (e.type) {
         case "PushEvent":
-          action = `Pushed to ${repo}`;
-          desc = (e.payload.commits || []).slice(0, 1).map((c) => c.message).join("") || "code update";
+          action = tr('github.activity.pushed', { repo: repo });
+          desc = (e.payload.commits || []).slice(0, 1).map((c) => c.message).join("") || tr('github.activity.codeUpdate');
           break;
         case "PullRequestEvent":
-          action = e.payload.action === "closed" ? `PR merged in ${repo}` : `PR opened in ${repo}`;
+          action = e.payload.action === "closed"
+            ? tr('github.activity.prMerged', { repo: repo })
+            : tr('github.activity.prOpened', { repo: repo });
           desc = (e.payload.pull_request && e.payload.pull_request.title) || "";
           break;
         case "ReleaseEvent":
-          action = `Released in ${repo}`;
-          desc = (e.payload.release && e.payload.release.name) || "new release";
+          action = tr('github.activity.released', { repo: repo });
+          desc = (e.payload.release && e.payload.release.name) || tr('github.activity.newRelease');
           break;
         case "IssuesEvent":
-          action = `${e.payload.action} issue in ${repo}`;
+          action = tr('github.activity.issueAction', { action: e.payload.action, repo: repo });
           desc = (e.payload.issue && e.payload.issue.title) || "";
           break;
         case "CreateEvent":
-          action = `Created ${e.payload.ref_type} in ${repo}`;
+          action = tr('github.activity.created', { ref_type: e.payload.ref_type, repo: repo });
           desc = e.payload.ref || "";
           break;
         default:
-          action = `${e.type.replace("Event", "")} in ${repo}`;
+          action = tr('github.activity.default', { type: e.type.replace("Event", ""), repo: repo });
           desc = "";
       }
       return {
@@ -148,6 +198,11 @@ const GitHubAPI = (function () {
 
   function timeAgo(dateStr) {
     if (!dateStr) return "";
+    // Use Intl.RelativeTimeFormat via I18n when available
+    if (window.I18n && I18n.formatRelativeTime) {
+      return I18n.formatRelativeTime(dateStr);
+    }
+    // Fallback for when I18n is not loaded
     const diff = Date.now() - new Date(dateStr).getTime();
     const min = Math.floor(diff / 60000);
     if (min < 60) return `${min}m ago`;
@@ -179,7 +234,14 @@ const GitHubAPI = (function () {
       });
     };
     set("avatar", profile.avatar_url || profile.avatar || FALLBACK.profile.avatar);
-    set("bio", profile.bio || FALLBACK.profile.bio);
+    // Localize bio if it comes from fallback (has 'bios' plural sibling)
+    var bio;
+    if (profile.bios) {
+      bio = localizedFallbackField(profile, 'bio');
+    } else {
+      bio = profile.bio || (FALLBACK.profile ? localizedFallbackField(FALLBACK.profile, 'bio') : "");
+    }
+    set("bio", bio);
     set("followers", profile.followers ?? FALLBACK.profile.followers);
     set("following", profile.following ?? FALLBACK.profile.following);
     set("name", profile.name || profile.login || SITE_CONFIG.name);
@@ -244,9 +306,16 @@ const GitHubAPI = (function () {
   }
 
   function repoData(repo) {
+    // Localize description if it comes from fallback (has 'descriptions' plural sibling)
+    var desc;
+    if (repo.descriptions) {
+      desc = localizedFallbackField(repo, 'description');
+    } else {
+      desc = repo.description || "";
+    }
     return {
       name: repo.name || repo.full_name || "",
-      desc: repo.description || "",
+      desc: desc,
       lang: repo.language || "Java",
       stars: repo.stargazers_count ?? repo.stars ?? 0,
       forks: repo.forks_count ?? repo.forks ?? 0,
