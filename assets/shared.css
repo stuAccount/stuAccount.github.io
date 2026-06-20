@@ -228,37 +228,73 @@
   opacity: 0.5;
 }
 
-/* ===== 返回枢纽导航 ===== */
-.gh-back-hub {
+/* ===== 顶部导航按钮组（返回 + 语言） ===== */
+.gh-nav-cluster {
   position: fixed;
   top: 16px;
   left: 16px;
-  z-index: 1000;
+  z-index: 9998;
   display: flex;
   align-items: center;
   gap: 8px;
-  padding: 8px 16px;
-  border-radius: 24px;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* ===== 返回枢纽按钮（与语言按钮统一样式） ===== */
+.gh-back-hub {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 0;
+  padding: 8px 10px;
+  border-radius: 999px;
   font-size: 13px;
   font-weight: 600;
   text-decoration: none;
-  background: rgba(0, 0, 0, 0.6);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  border: 1px solid rgba(255, 255, 255, 0.15);
-  color: #fff;
-  transition: all 0.2s;
-}
-
-.gh-back-hub:hover {
-  background: rgba(0, 0, 0, 0.8);
-  border-color: rgba(255, 255, 255, 0.3);
-  transform: translateX(-2px);
+  background: rgba(255, 255, 255, 0.12);
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  color: rgba(255, 255, 255, 0.85);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.15);
+  overflow: hidden;
+  white-space: nowrap;
+  cursor: pointer;
 }
 
 .gh-back-hub svg {
   width: 16px;
   height: 16px;
+  flex-shrink: 0;
+}
+
+/* Collapsed: label hidden */
+.gh-back-hub span {
+  font-weight: 600;
+  letter-spacing: 0.3px;
+  opacity: 0;
+  max-width: 0;
+  overflow: hidden;
+  transition: opacity 0.3s ease, max-width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Expanded: via wrapper hover or self hover */
+.gh-nav-cluster:hover .gh-back-hub,
+.gh-back-hub:hover {
+  padding: 8px 14px;
+  gap: 6px;
+  background: rgba(255, 255, 255, 0.2);
+  border-color: rgba(255, 255, 255, 0.3);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+}
+
+.gh-nav-cluster:hover .gh-back-hub span,
+.gh-back-hub:hover span {
+  opacity: 1;
+  max-width: 120px;
 }
 
 /* ===== 错误提示 ===== */
@@ -285,10 +321,21 @@
 
 /* ===== 响应式 ===== */
 @media (max-width: 640px) {
-  .gh-back-hub {
+  .gh-nav-cluster {
     top: 8px;
     left: 8px;
-    padding: 6px 12px;
+    gap: 6px;
+  }
+  .gh-nav-cluster .gh-back-hub,
+  .gh-nav-cluster .i18n-trigger {
+    padding: 6px 8px;
     font-size: 12px;
+  }
+  .gh-nav-cluster:hover .gh-back-hub,
+  .gh-nav-cluster:hover .i18n-trigger,
+  .gh-nav-cluster .gh-back-hub:hover,
+  .gh-nav-cluster .i18n-trigger:hover,
+  .gh-nav-cluster.open .i18n-trigger {
+    padding: 6px 10px;
   }
 }

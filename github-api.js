@@ -3,7 +3,7 @@
  * ============================================================
  * - 动态获取用户资料、仓库、活动数据
  * - localStorage 缓存（默认 10 分钟）
- * - 加载状态与错误降级处理
+ * - 严格 API-only 模式：无降级兜底数据
  * - 自动填充带有 data-github 属性的 DOM 元素
  *
  * 用法：
@@ -19,8 +19,7 @@
 const GitHubAPI = (function () {
   const CACHE_KEY = "gh_cache_v1";
   const CACHE_TTL = (window.SITE_CONFIG && window.SITE_CONFIG.cacheTTL) || 600000;
-  const USERNAME = (window.SITE_CONFIG && window.SITE_CONFIG.githubUsername) || "stuAccount";
-  const FALLBACK = (window.SITE_CONFIG && window.SITE_CONFIG.fallback) || {};
+  const USERNAME = (window.SITE_CONFIG && window.SITE_CONFIG.githubUsername) || "jessezen";
 
   /* ---------- 缓存读写 ---------- */
   function getCache() {
@@ -64,12 +63,16 @@ const GitHubAPI = (function () {
       fetchJSON(`${base}/events?per_page=10`),
     ]);
 
+    // profile 必须成功，否则视为整体失败
+    if (profile.status !== "fulfilled") {
+      throw new Error(`Failed to fetch profile: ${profile.reason.message}`);
+    }
+
     const data = {
-      profile: profile.status === "fulfilled" ? profile.value : FALLBACK.profile,
-      repos: repos.status === "fulfilled" ? repos.value : FALLBACK.repos,
+      profile: profile.value,
+      repos: repos.status === "fulfilled" ? repos.value : [],
       events: events.status === "fulfilled" ? events.value : [],
-      // 至少一个成功才算在线
-      online: profile.status === "fulfilled" || repos.status === "fulfilled",
+      online: true,
       ts: Date.now(),
     };
 
@@ -85,40 +88,16 @@ const GitHubAPI = (function () {
   function computeStats(data) {
     const repos = data.repos || [];
     const stars = repos.reduce((s, r) => s + (r.stargazers_count || r.stars || 0), 0);
-    const fb = FALLBACK.stats || {};
     return {
-      contributions: fb.contributions,
-      streak: fb.streak,
-      stars: stars || fb.stars,
-      repos: (data.profile && data.profile.public_repos) || fb.repos,
+      contributions: 0, // GitHub API 不直接提供，留空
+      streak: 0,
+      stars: stars,
+      repos: (data.profile && data.profile.public_repos) || repos.length,
     };
   }
 
-  // Localize a fallback item's field via its plural sibling (action→actions, desc→descs)
-  function localizedFallbackField(item, field) {
-    var lang = (window.I18n && I18n.getLang) ? I18n.getLang() : 'en';
-    var pluralKey = field + 's'; // action→actions, desc→descs
-    if (item[pluralKey]) {
-      var localized = item[pluralKey][lang] || item[pluralKey]['en'];
-      if (localized !== undefined) return localized;
-    }
-    return item[field]; // legacy fallback
-  }
-
   function parseActivity(events) {
-    if (!events || !events.length) {
-      // Localize fallback activity data
-      return (FALLBACK.activity || []).map(function (item) {
-        return {
-          type: item.type,
-          action: localizedFallbackField(item, 'action'),
-          desc: localizedFallbackField(item, 'desc'),
-          time: item.time || '',
-          repo: item.repo || '',
-          color: '#64748b',
-        };
-      });
-    }
+    if (!events || !events.length) return [];
 
     const colorMap = {
       PushEvent: "#00f0ff",
@@ -217,7 +196,7 @@ const GitHubAPI = (function () {
   /* ---------- DOM 自动填充 ---------- */
   function fillStat(key, val) {
     document.querySelectorAll(`[data-github="stat:${key}"]`).forEach((el) => {
-      el.textContent = typeof val === "number" ? val.toLocaleString() : val;
+      el.textContent = typeof val === "number" ? val.toLocaleString() : (val || "—");
       el.classList.add("gh-loaded");
     });
   }
@@ -228,23 +207,16 @@ const GitHubAPI = (function () {
         if (key === "avatar") {
           el.src = val;
         } else {
-          el.textContent = val;
+          el.textContent = val || "";
         }
         el.classList.add("gh-loaded");
       });
     };
-    set("avatar", profile.avatar_url || profile.avatar || FALLBACK.profile.avatar);
-    // Localize bio if it comes from fallback (has 'bios' plural sibling)
-    var bio;
-    if (profile.bios) {
-      bio = localizedFallbackField(profile, 'bio');
-    } else {
-      bio = profile.bio || (FALLBACK.profile ? localizedFallbackField(FALLBACK.profile, 'bio') : "");
-    }
-    set("bio", bio);
-    set("followers", profile.followers ?? FALLBACK.profile.followers);
-    set("following", profile.following ?? FALLBACK.profile.following);
-    set("name", profile.name || profile.login || SITE_CONFIG.name);
+    set("avatar", profile.avatar_url || "");
+    set("bio", profile.bio || "");
+    set("followers", profile.followers ?? 0);
+    set("following", profile.following ?? 0);
+    set("name", profile.name || profile.login || (window.SITE_CONFIG && SITE_CONFIG.name) || "");
   }
 
   /* ---------- 通用克隆填充 ---------- */
@@ -306,17 +278,10 @@ const GitHubAPI = (function () {
   }
 
   function repoData(repo) {
-    // Localize description if it comes from fallback (has 'descriptions' plural sibling)
-    var desc;
-    if (repo.descriptions) {
-      desc = localizedFallbackField(repo, 'description');
-    } else {
-      desc = repo.description || "";
-    }
     return {
       name: repo.name || repo.full_name || "",
-      desc: desc,
-      lang: repo.language || "Java",
+      desc: repo.description || "",
+      lang: repo.language || "",
       stars: repo.stargazers_count ?? repo.stars ?? 0,
       forks: repo.forks_count ?? repo.forks ?? 0,
       url: repo.html_url || repo.url || "#",
@@ -327,7 +292,7 @@ const GitHubAPI = (function () {
     const containers = document.querySelectorAll('[data-github="repos:list"]');
     if (!containers.length) return;
 
-    const list = (repos || FALLBACK.repos).slice(0, 6);
+    const list = (repos || []).slice(0, 6);
     containers.forEach((container) => {
       const template = container.querySelector("[data-repo-template]");
       if (!template) return;
@@ -371,7 +336,7 @@ const GitHubAPI = (function () {
     const containers = document.querySelectorAll('[data-github="activity:list"]');
     if (!containers.length) return;
 
-    const list = activity || FALLBACK.activity;
+    const list = activity || [];
     containers.forEach((container) => {
       const template = container.querySelector("[data-activity-template]");
       if (!template) return;
@@ -394,28 +359,14 @@ const GitHubAPI = (function () {
   }
 
   function fillBlog() {
-    const posts = (window.SITE_CONFIG && window.SITE_CONFIG.blogPosts) || [];
+    // Blog posts are now API-only — no local content.
+    // Remove the template from DOM so the section stays empty.
     const containers = document.querySelectorAll('[data-github="blog:list"]');
     if (!containers.length) return;
 
     containers.forEach((container) => {
       const template = container.querySelector("[data-blog-template]");
-      if (!template) return;
-      const templateClone = template.cloneNode(true);
-      const parent = template.parentNode;
-      template.remove();
-
-      posts.forEach((post, i) => {
-        const data = {
-          title: post.title || "",
-          excerpt: post.excerpt || "",
-          date: post.date || "",
-          readtime: post.readTime || "",
-          category: post.category || "",
-          url: post.url || "#",
-        };
-        parent.appendChild(cloneAndFill(templateClone, data, i));
-      });
+      if (template) template.remove();
       container.classList.add("gh-loaded");
     });
   }
@@ -433,9 +384,26 @@ const GitHubAPI = (function () {
     document.querySelectorAll(".gh-skeleton").forEach((el) => el.classList.remove("gh-skeleton"));
   }
 
+  /* ---------- 错误处理 ---------- */
+  function showError(message) {
+    // Remove any existing error banner
+    const existing = document.querySelector('.gh-error-banner');
+    if (existing) existing.remove();
+
+    const banner = document.createElement('div');
+    banner.className = 'gh-error-banner';
+    banner.innerHTML = '<strong>GitHub API</strong> ' + (message || 'request failed');
+    document.body.appendChild(banner);
+
+    // Auto-dismiss after 8 seconds
+    setTimeout(function () {
+      if (banner.parentNode) banner.remove();
+    }, 8000);
+  }
+
   /* ---------- 初始化入口 ---------- */
   async function init() {
-    // 先填充博客（本地数据，无需等待）
+    // Blog section: no local data, just clean up templates
     fillBlog();
 
     setLoading(true);
@@ -449,16 +417,14 @@ const GitHubAPI = (function () {
       fillRepos(data.repos);
       fillActivity(data.activity);
     } catch (err) {
-      // 全部失败时使用降级数据
-      console.warn("[GitHubAPI] 使用降级数据:", err.message);
-      const fb = FALLBACK;
-      fillStat("contributions", fb.stats.contributions);
-      fillStat("streak", fb.stats.streak);
-      fillStat("stars", fb.stats.stars);
-      fillStat("repos", fb.stats.repos);
-      fillProfile(fb.profile);
-      fillRepos(fb.repos);
-      fillActivity(fb.activity);
+      // API-only mode: show error, no fallback data
+      console.warn("[GitHubAPI] API request failed:", err.message);
+      showError(err.message);
+      // Clear loading state on stat elements
+      document.querySelectorAll('[data-github^="stat:"]').forEach((el) => {
+        el.textContent = "—";
+        el.classList.add("gh-loaded");
+      });
     } finally {
       clearLoading();
     }

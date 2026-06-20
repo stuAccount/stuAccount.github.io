@@ -15,11 +15,11 @@ const SITE_CONFIG = {
   courtesyName: "志远", // 水墨风模板使用的表字
 
   /* ===== GitHub 配置 ===== */
-  githubUsername: "stuAccount",
+  githubUsername: "jessezen",
 
   /* ===== 社交链接 ===== */
   social: {
-    github: "https://github.com/stuAccount",
+    github: "https://github.com/jessezen",
     email: "",
     website: "",
   },
@@ -45,46 +45,6 @@ const SITE_CONFIG = {
     { name: "Distributed Systems", icon: "globe" },
     { name: "LeetCode", icon: "code" },
     { name: "Vim", icon: "terminal" },
-  ],
-
-  /* ===== 博客文章（占位符，后续可替换为真实内容） ===== */
-  blogPosts: [
-    {
-      title: "深入理解 Spring Boot 3 的自动配置机制",
-      date: "2024-03-15",
-      readTime: "8 min",
-      category: "Spring Boot",
-      excerpt: "Spring Boot 3 带来了全新的自动配置重构，基于 Jakarta EE 9+ 并引入了 @AutoConfiguration 注解。本文将深入源码，剖析自动配置的加载、条件过滤与排序机制……",
-      url: "#", // 替换为真实文章链接
-      placeholder: true,
-    },
-    {
-      title: "Redis 分布式锁的几种实现方式对比",
-      date: "2024-02-28",
-      readTime: "12 min",
-      category: "Redis",
-      excerpt: "从 SETNX 到 Redlock，从单机到集群，分布式锁的实现方案百花齐放。本文对比五种主流方案的优缺点、适用场景及生产实践中的坑……",
-      url: "#",
-      placeholder: true,
-    },
-    {
-      title: "从零搭建高可用微服务架构",
-      date: "2024-02-10",
-      readTime: "15 min",
-      category: "Microservices",
-      excerpt: "基于 Spring Cloud Alibaba 构建生产级微服务架构的完整指南。涵盖服务注册发现、配置中心、网关、熔断限流、链路追踪与分布式事务……",
-      url: "#",
-      placeholder: true,
-    },
-    {
-      title: "JVM 调优实战：GC 日志分析指南",
-      date: "2024-01-20",
-      readTime: "10 min",
-      category: "JVM",
-      excerpt: "GC 日志是 JVM 调优的第一手资料。本文通过真实生产案例，演示如何使用 GCEasy、GCViewer 分析吞吐量、停顿时间与内存碎片……",
-      url: "#",
-      placeholder: true,
-    },
   ],
 
   /* ===== 平行宇宙定义（枢纽页使用） ===== */
@@ -195,104 +155,6 @@ const SITE_CONFIG = {
       path: "./templates/ink-minimal.html",
     },
   ],
-
-  /* ===== 降级数据（GitHub API 不可用时使用） ===== */
-  fallback: {
-    profile: {
-      avatar: "https://avatars.githubusercontent.com/u/0?v=4",
-      bio: "Java Backend Developer",
-      bios: { en: "Java Backend Developer", "zh-CN": "Java 后端开发者", "zh-TW": "Java 後端開發者" },
-      followers: 0,
-      following: 0,
-      publicRepos: 38,
-    },
-    stats: {
-      contributions: 1247,
-      streak: 42,
-      stars: 312,
-      repos: 38,
-    },
-    repos: [
-      {
-        name: "spring-cloud-gateway-pro",
-        description: "Production-ready API gateway with rate limiting & auth",
-        descriptions: { en: "Production-ready API gateway with rate limiting & auth", "zh-CN": "生产级 API 网关，含限流与鉴权", "zh-TW": "生產級 API 閘道，含限流與鑑權" },
-        stars: 128,
-        forks: 34,
-        language: "Java",
-        url: "https://github.com/stuAccount/spring-cloud-gateway-pro",
-        updated: "2024-03-15",
-      },
-      {
-        name: "distributed-task-scheduler",
-        description: "Fault-tolerant distributed task scheduling framework",
-        descriptions: { en: "Fault-tolerant distributed task scheduling framework", "zh-CN": "容错分布式任务调度框架", "zh-TW": "容錯分散式任務排程框架" },
-        stars: 87,
-        forks: 21,
-        language: "Java",
-        url: "https://github.com/stuAccount/distributed-task-scheduler",
-        updated: "2024-02-28",
-      },
-      {
-        name: "redis-cache-toolkit",
-        description: "Smart caching utilities with Redis & Spring integration",
-        descriptions: { en: "Smart caching utilities with Redis & Spring integration", "zh-CN": "智能缓存工具，集成 Redis 与 Spring", "zh-TW": "智慧快取工具，整合 Redis 與 Spring" },
-        stars: 54,
-        forks: 12,
-        language: "Java",
-        url: "https://github.com/stuAccount/redis-cache-toolkit",
-        updated: "2024-02-10",
-      },
-      {
-        name: "leetcode-java-solutions",
-        description: "300+ LeetCode solutions with detailed explanations",
-        descriptions: { en: "300+ LeetCode solutions with detailed explanations", "zh-CN": "300+ LeetCode 题解，含详细解析", "zh-TW": "300+ LeetCode 題解，含詳細解析" },
-        stars: 43,
-        forks: 67,
-        language: "Java",
-        url: "https://github.com/stuAccount/leetcode-java-solutions",
-        updated: "2024-01-20",
-      },
-    ],
-    activity: [
-      {
-        type: "PushEvent",
-        action: "Pushed to spring-cloud-gateway-pro",
-        actions: { en: "Pushed to spring-cloud-gateway-pro", "zh-CN": "推送到 spring-cloud-gateway-pro", "zh-TW": "推送到 spring-cloud-gateway-pro" },
-        desc: "feat: add Redis caching layer to user service",
-        descs: { en: "feat: add Redis caching layer to user service", "zh-CN": "feat: 为用户服务添加 Redis 缓存层", "zh-TW": "feat: 為用戶服務添加 Redis 快取層" },
-        time: "2h ago",
-        repo: "spring-cloud-gateway-pro",
-      },
-      {
-        type: "PullRequestEvent",
-        action: "PR merged in distributed-task-scheduler",
-        actions: { en: "PR merged in distributed-task-scheduler", "zh-CN": "PR 已合并到 distributed-task-scheduler", "zh-TW": "PR 已合併到 distributed-task-scheduler" },
-        desc: "refactor: migrate payment module to Spring Boot 3",
-        descs: { en: "refactor: migrate payment module to Spring Boot 3", "zh-CN": "refactor: 将支付模块迁移至 Spring Boot 3", "zh-TW": "refactor: 將支付模組遷移至 Spring Boot 3" },
-        time: "1d ago",
-        repo: "distributed-task-scheduler",
-      },
-      {
-        type: "ReleaseEvent",
-        action: "Released redis-cache-toolkit v2.1.0",
-        actions: { en: "Released redis-cache-toolkit v2.1.0", "zh-CN": "发布 redis-cache-toolkit v2.1.0", "zh-TW": "發布 redis-cache-toolkit v2.1.0" },
-        desc: "Added smart invalidation and Lua scripting support",
-        descs: { en: "Added smart invalidation and Lua scripting support", "zh-CN": "新增智能失效与 Lua 脚本支持", "zh-TW": "新增智慧失效與 Lua 腳本支援" },
-        time: "3d ago",
-        repo: "redis-cache-toolkit",
-      },
-      {
-        type: "PushEvent",
-        action: "Fixed critical bug in payment-service",
-        actions: { en: "Fixed critical bug in payment-service", "zh-CN": "修复 payment-service 关键 bug", "zh-TW": "修復 payment-service 關鍵 bug" },
-        desc: "resolve distributed lock race condition",
-        descs: { en: "resolve distributed lock race condition", "zh-CN": "解决分布式锁竞态条件", "zh-TW": "解決分散式鎖競態條件" },
-        time: "5d ago",
-        repo: "payment-service",
-      },
-    ],
-  },
 
   /* ===== GitHub API 缓存时间（毫秒） ===== */
   cacheTTL: 1000 * 60 * 10, // 10 分钟
