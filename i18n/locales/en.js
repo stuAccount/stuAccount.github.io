@@ -87,6 +87,8 @@ window.I18nMessages['en'] = {
     stars: "Stars",
     starsEarned: "Stars Earned",
     starsEarnedUpper: "STARS_EARNED",
+    forks: "Forks",
+    forksUpper: "FORKS",
     repos: "Repos",
     repositories: "Repositories",
     repositoriesUpper: "REPOSITORIES",
@@ -133,6 +135,10 @@ window.I18nMessages['en'] = {
     lastSync: "# last sync: ${date} · source: github.com/${user}",
     sessionTerminated: "Session terminated. Connection closed.",
     processExited: "[process exited with code 0]",
+    error: {
+      apiError: "GitHub API Error",
+      fetchFailed: "GitHub API request failed: ${message}",
+    },
   },
 
   /* ===== Footer ===== */

@@ -88,10 +88,12 @@ const GitHubAPI = (function () {
   function computeStats(data) {
     const repos = data.repos || [];
     const stars = repos.reduce((s, r) => s + (r.stargazers_count || r.stars || 0), 0);
+    const forks = repos.reduce((s, r) => s + (r.forks_count || r.forks || 0), 0);
     return {
-      contributions: 0, // GitHub API 不直接提供，留空
+      contributions: 0, // GitHub REST API 不直接提供，留空
       streak: 0,
       stars: stars,
+      forks: forks,
       repos: (data.profile && data.profile.public_repos) || repos.length,
     };
   }
@@ -385,20 +387,99 @@ const GitHubAPI = (function () {
   }
 
   /* ---------- 错误处理 ---------- */
+  function trError(key, params) {
+    if (window.I18n && I18n.t) {
+      var val = I18n.t(key, params);
+      if (val !== key) return val;
+    }
+    var dict = {
+      'github.error.apiError': 'API接入异常',
+      'github.error.fetchFailed': 'GitHub API request failed: ${message}',
+      'github.error.title': 'API接入异常',
+      'github.error.detail': 'GitHub API request failed. Real data could not be loaded.',
+    };
+    var val = dict[key] || key;
+    if (params) {
+      Object.keys(params).forEach(function (k) {
+        val = val.replace('${' + k + '}', params[k]);
+      });
+    }
+    return val;
+  }
+
+  function injectErrorStyles() {
+    if (document.getElementById('gh-error-styles')) return;
+    var css = document.createElement('style');
+    css.id = 'gh-error-styles';
+    css.textContent = [
+      '.gh-error-banner{position:fixed;top:16px;left:50%;transform:translateX(-50%);z-index:9998;',
+      'padding:12px 24px;border-radius:8px;background:rgba(220,38,38,0.95);color:#fff;',
+      'font-family:monospace;font-size:13px;font-weight:600;letter-spacing:1px;',
+      'box-shadow:0 8px 32px rgba(220,38,38,0.4);backdrop-filter:blur(10px);',
+      'border:1px solid rgba(255,255,255,0.2);max-width:90vw;text-align:center;}',
+      '.gh-error-inline{padding:24px 16px;text-align:center;color:#dc2626;',
+      'font-family:monospace;font-size:14px;font-weight:600;letter-spacing:1px;',
+      'border:1px dashed rgba(220,38,38,0.4);border-radius:6px;background:rgba(220,38,38,0.05);}',
+      '.gh-error-inline.gh-error-json{color:#ff6b6b;border-color:rgba(255,107,107,0.4);',
+      'background:rgba(255,107,107,0.05);}',
+      '[data-github].gh-stat-error{color:#dc2626 !important;font-size:0.7em !important;}',
+    ].join('');
+    document.head.appendChild(css);
+  }
+
   function showError(message) {
+    injectErrorStyles();
     // Remove any existing error banner
     const existing = document.querySelector('.gh-error-banner');
     if (existing) existing.remove();
 
     const banner = document.createElement('div');
     banner.className = 'gh-error-banner';
-    banner.innerHTML = '<strong>GitHub API</strong> ' + (message || 'request failed');
+    banner.textContent = trError('github.error.apiError') + (message ? ' · ' + message : '');
     document.body.appendChild(banner);
 
-    // Auto-dismiss after 8 seconds
+    // Auto-dismiss after 10 seconds
     setTimeout(function () {
       if (banner.parentNode) banner.remove();
-    }, 8000);
+    }, 10000);
+  }
+
+  function showInlineError(container, isJson) {
+    var el = document.createElement('div');
+    el.className = 'gh-error-inline' + (isJson ? ' gh-error-json' : '');
+    el.textContent = trError('github.error.apiError');
+    container.appendChild(el);
+  }
+
+  function clearContainerForError(container) {
+    // Remove all children (templates with mock content)
+    container.innerHTML = '';
+  }
+
+  function showStatError() {
+    document.querySelectorAll('[data-github^="stat:"]').forEach(function (el) {
+      el.textContent = trError('github.error.apiError');
+      el.classList.add('gh-stat-error', 'gh-loaded');
+    });
+  }
+
+  function showContainerErrors() {
+    // repos:list containers
+    document.querySelectorAll('[data-github="repos:list"]').forEach(function (container) {
+      var isJson = container.getAttribute('data-fill-mode') === 'json';
+      clearContainerForError(container);
+      showInlineError(container, isJson);
+    });
+    // activity:list containers
+    document.querySelectorAll('[data-github="activity:list"]').forEach(function (container) {
+      clearContainerForError(container);
+      showInlineError(container);
+    });
+    // blog:list containers
+    document.querySelectorAll('[data-github="blog:list"]').forEach(function (container) {
+      clearContainerForError(container);
+      showInlineError(container);
+    });
   }
 
   /* ---------- 初始化入口 ---------- */
@@ -412,19 +493,19 @@ const GitHubAPI = (function () {
       fillStat("contributions", data.stats.contributions);
       fillStat("streak", data.stats.streak);
       fillStat("stars", data.stats.stars);
+      fillStat("forks", data.stats.forks);
       fillStat("repos", data.stats.repos);
       fillProfile(data.profile);
       fillRepos(data.repos);
       fillActivity(data.activity);
     } catch (err) {
-      // API-only mode: show error, no fallback data
+      // API-only mode: show "API接入异常" error, no fallback/mock data
       console.warn("[GitHubAPI] API request failed:", err.message);
       showError(err.message);
-      // Clear loading state on stat elements
-      document.querySelectorAll('[data-github^="stat:"]').forEach((el) => {
-        el.textContent = "—";
-        el.classList.add("gh-loaded");
-      });
+      // Show error message in all stat elements
+      showStatError();
+      // Clear all template containers and show inline error message
+      showContainerErrors();
     } finally {
       clearLoading();
     }

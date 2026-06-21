@@ -81,6 +81,8 @@ window.I18nMessages['zh-CN'] = {
     stars: "星标",
     starsEarned: "获取星标",
     starsEarnedUpper: "获取星标",
+    forks: "Fork",
+    forksUpper: "FORK",
     repos: "仓库",
     repositories: "仓库",
     repositoriesUpper: "仓库",
@@ -127,6 +129,10 @@ window.I18nMessages['zh-CN'] = {
     lastSync: "# 最后同步: ${date} · 来源: github.com/${user}",
     sessionTerminated: "会话已终止。连接已关闭。",
     processExited: "[进程已退出，返回码 0]",
+    error: {
+      apiError: "API接入异常",
+      fetchFailed: "GitHub API 请求失败: ${message}",
+    },
   },
 
   /* ===== 页脚 ===== */

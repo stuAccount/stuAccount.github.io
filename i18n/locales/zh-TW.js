@@ -81,6 +81,8 @@ window.I18nMessages['zh-TW'] = {
     stars: "星標",
     starsEarned: "獲取星標",
     starsEarnedUpper: "獲取星標",
+    forks: "Fork",
+    forksUpper: "FORK",
     repos: "倉庫",
     repositories: "倉庫",
     repositoriesUpper: "倉庫",
@@ -127,6 +129,10 @@ window.I18nMessages['zh-TW'] = {
     lastSync: "# 最後同步: ${date} · 來源: github.com/${user}",
     sessionTerminated: "工作階段已終止。連線已關閉。",
     processExited: "[程序已退出，返回碼 0]",
+    error: {
+      apiError: "API接入異常",
+      fetchFailed: "GitHub API 請求失敗: ${message}",
+    },
   },
 
   /* ===== 頁尾 ===== */
